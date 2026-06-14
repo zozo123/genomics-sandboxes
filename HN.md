@@ -2,54 +2,40 @@
 
 ## Title (pick one)
 
-1. **Show HN: I timed VM snapshots on genomics, and the genes showed up**
-2. Show HN: Map-reducing the human genome on disposable sandboxes
-3. Show HN: A VM snapshot is the MapReduce broadcast (genomics demo)
-4. Show HN: I forked a warm reference-genome sandbox per chromosome
+1. **Show HN: Warm one box, fork the genome — reference broadcast by VM snapshot**
+2. Show HN: A VM snapshot is the reference broadcast (genomics scatter-gather)
+3. Show HN: Stop re-staging the reference genome to every shard
+4. Show HN: Map-reducing the human genome by forking a warm snapshot per chromosome
 
-→ Recommend **#1 or #2** (concrete, no hype; #1 leads with the surprise, #2 with the method).
+→ Recommend **#1 or #2** (concrete, method-forward, no hype).
 URL: https://zozo123.github.io/genomics-sandboxes/
 
 ## First comment (author)
 
-A decade ago, scanning the methylation landscape of a few chromosomes meant a wet lab, a
-cluster, and a bioinformatics team. I wanted to see how far that's collapsed, so I ran a real
-one end-to-end from a laptop — and the interesting part turned out to be an infra idea, not a
-genomics one.
+The reference genome and its indices are 8–40 GB of read-only state that never changes during a
+run — a GRCh38 FASTA is ~3 GB, a BWA index adds ~5 GB, a STAR index 27–30 GB — yet GATK
+scatter-gather workflows re-localize all of it to every one of hundreds of shards, and re-stage
+it again on every spot preemption. The right move is to warm it once, snapshot the initialized
+address space, and fork it copy-on-write to each shard: the same SnapStart/Firecracker trick. The
+(N+1)th shard costs a page-table setup, not another multi-GB read, and every fork is
+byte-identical because they map the same physical pages.
 
-Genomics is embarrassingly parallel (scatter by chromosome/interval, gather), but the painful
-part is the *broadcast*: every worker needs the multi-GB reference + indices + toolchain before
-it can do a second of real work. So instead of re-staging that on each worker, I warm **one**
-box, snapshot it, and fork the snapshot per chromosome. A VM snapshot is just the most efficient
-possible broadcast of a read-only base — same trick as Firecracker snapshots / Lambda SnapStart /
-CRIU, pointed at a genome.
+This matters more when the pipeline author is a model: you get disposable isolation for untrusted
+code, O(1) broadcast across thousand-way fan-out, and a positive control baked into the warm-up —
+here the CpG-island-density gradient (chr19 densest, chrY a desert) that a correct map-reduce must
+reproduce. The whole thing was orchestrated by an agent driving four islo verbs; the site fetches
+the real `receipts.json`, nothing is hardcoded.
 
-Real receipts from the run on islo.dev: warm base built once in 24s → 127 MB snapshot saved in
-3.9s → five chromosome forks start *warm* and finish in ~15s wall-clock, vs 34s if each worker
-re-stages the reference itself. The site fetches the actual `receipts.json`; nothing's hardcoded.
+Honest scope: my demo warm-up is a 72 MB toy, so I've shown the mechanism, not the at-scale
+economics. Snapshots also only restore on a compatible CPU/kernel.
 
-The part I didn't expect to like: it's self-checking. The fan-out recovers a known fact —
-CpG-island density tracks gene density, so chr19 lights up (287 islands/Mb) and chrY is a desert
-(80/Mb). If the plumbing were wrong, the biology would be wrong.
-
-Honest caveats up front: island calls are candidates (Gardiner-Garden & Frommer; Takai & Jones
-tightened the rule), it's the public reference not anyone's personal genome, and at this toy
-scale the first-run speedup is modest — the real payoff is amortization (re-runs pay only the map
-wall-clock) and byte-identical reproducibility across shards. Swap in a 3 GB reference + BWA
-indices across a cohort and the snapshot stops being an optimization.
-
-There's also a privacy angle I find compelling given the 23andMe collapse: a sandbox is a
-computer that dies on purpose. You can analyze a genome on a box you control and then destroy,
-instead of depositing it in a third party's permanent, sellable database.
-
-Code, kernel, and raw receipts: https://github.com/zozo123/genomics-sandboxes — happy to answer
-questions about the islo run or the CpG math.
+Code, kernel, and raw receipts: https://github.com/zozo123/genomics-sandboxes
 
 ## Pre-empting the likely top comment
 
 > "This is just GC content, not real variant calling / methylation."
 
-Right — deliberately. It's a transparent, verifiable proxy that exercises the exact pattern
-(scatter→gather) real pipelines use. The contribution isn't the kernel; it's the broadcast
-primitive. Swap the kernel for DeepVariant or a methylation caller and the snapshot-fork shape is
-identical.
+Right — deliberately. The CpG-island/gene-density gradient is a *positive control*, not the
+product: a known-answer signal that tells me the sharding, per-shard compute, and reduce are
+wired correctly. The contribution is the broadcast primitive, not the kernel. Swap in DeepVariant
+or a methylation caller and the snapshot-fork shape is identical.

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>I timed a VM, and the genes showed up — map-reduce on disposable sandboxes</title>
-  <meta name="description" content="I was benchmarking VM snapshots: warm one reference genome, snapshot it, fork it per chromosome on islo.dev, reduce. The per-chromosome counts came back ranked by gene density — a known feature of the genome, recovered as a side effect. Real, reproducible.">
+  <title>Warm one box, fork the genome — reference-broadcast by VM snapshot</title>
+  <meta name="description" content="In real genomics the expensive state is the read-only reference + indices (8–40 GB), re-staged to every shard. Warm one box, snapshot it, fork it copy-on-write per chromosome on islo.dev: an O(1), byte-identical broadcast. Validated against a positive control — the CpG-island/gene-density gradient. Real, reproducible.">
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#1a1712">
 
@@ -13,8 +13,8 @@
 
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://zozo123.github.io/genomics-sandboxes/">
-  <meta property="og:title" content="I timed a VM, and the genes showed up">
-  <meta property="og:description" content="Benchmarking VM snapshots on genomics: fork one warm reference per chromosome. The per-chromosome counts came back ranked by gene density.">
+  <meta property="og:title" content="Warm one box. Fork the genome.">
+  <meta property="og:description" content="The reference + indices are 8–40 GB of read-only state re-staged to every shard. Snapshot one warm box, fork it copy-on-write per chromosome: an O(1), byte-identical broadcast.">
   <meta property="og:image" content="https://zozo123.github.io/genomics-sandboxes/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -22,8 +22,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@YossiEliaz">
   <meta name="twitter:creator" content="@YossiEliaz">
-  <meta name="twitter:title" content="I timed a VM, and the genes showed up">
-  <meta name="twitter:description" content="A VM-snapshot benchmark on genomics. The per-chromosome counts came back ranked by gene density. Real demo on islo.dev.">
+  <meta name="twitter:title" content="Warm one box. Fork the genome.">
+  <meta name="twitter:description" content="Reference + indices are 8–40 GB of read-only state. Snapshot one warm box, fork it per chromosome: O(1), byte-identical broadcast. Validated by a positive control. Real demo on islo.dev.">
   <meta name="twitter:image" content="https://zozo123.github.io/genomics-sandboxes/og.png">
 
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%231a1712'/%3E%3Cg stroke='%23e5421f' stroke-width='4' fill='none'%3E%3Cpath d='M22 10c20 9 -20 35 0 44'/%3E%3Cpath d='M42 10c-20 9 20 35 0 44'/%3E%3C/g%3E%3Cg stroke='%23e5421f' stroke-width='3'%3E%3Cline x1='24' y1='20' x2='40' y2='20'/%3E%3Cline x1='24' y1='32' x2='40' y2='32'/%3E%3Cline x1='24' y1='44' x2='40' y2='44'/%3E%3C/g%3E%3C/svg%3E">
@@ -39,8 +39,8 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "I timed a VM, and the genes showed up",
-    "description": "A VM-snapshot benchmark on islo.dev: fork a warm reference genome per chromosome, reduce. The per-chromosome CpG-island counts came back ranked by gene density. Real, reproducible.",
+    "headline": "Warm one box. Fork the genome.",
+    "description": "Reference broadcast by VM snapshot: warm one box with the reference + indices, snapshot it, fork it copy-on-write per chromosome on islo.dev. An O(1), byte-identical broadcast, validated against the CpG-island/gene-density positive control. Real, reproducible.",
     "url": "https://zozo123.github.io/genomics-sandboxes/",
     "image": "https://zozo123.github.io/genomics-sandboxes/og.png",
     "datePublished": "2026-06-14",
@@ -54,11 +54,11 @@
 <!-- ============ MASTHEAD ============ -->
 <header class="mast">
   <div class="rule-top"><span>GRCh38 · chr19·20·21·22·Y</span><span>277.8&nbsp;Mb · receipts.json fetched live</span><span>FIELD&nbsp;MANUAL · No.07 · 2026</span></div>
-  <h1 class="load" style="--d:.05s">I timed a VM.<br>The genes<br>showed up<span class="dot">.</span></h1>
+  <h1 class="load" style="--d:.05s">Warm one box.<br>Fork the<br>genome<span class="dot">.</span></h1>
   <p class="thesis load" style="--d:.18s">
-    I was benchmarking VM snapshots, not doing biology. But the per-chromosome counts came back <em>ranked by gene density</em> — a known feature of the genome, recovered as a side effect.
+    I was benchmarking VM snapshots, not doing biology. The per-chromosome counts came back ranked by gene density — <em>a positive control on the pipeline, not a finding.</em>
   </p>
-  <p class="claim load" style="--d:.3s">5 chromosomes · 277.8&nbsp;Mb · 37,374 CpG-island candidates. <strong>The ranking matches gene density.</strong></p>
+  <p class="claim load" style="--d:.3s">Warm a reference once, snapshot it, fork it copy-on-write to every shard — the expensive read-only state becomes an <strong>O(1), byte-identical broadcast</strong>, not a per-task re-download.</p>
   <p class="def load" style="--d:.4s"><span class="mk">CpG island · the thing we scan for</span>A short stretch where the letters <code>C</code> and <code>G</code> sit together far more than chance — usually parked at the start of a gene. Whether it's chemically <i>methylated</i> is one of biology's master switches: it's what epigenetic age clocks read, what cancer screens watch, and what makes a neuron differ from a skin cell with identical DNA.</p>
   <nav class="jump load" style="--d:.5s" aria-label="Sections">
     <a href="#setup">01 / The setup</a><a href="#process">02 / The process</a><a href="#run">03 / The run</a><a href="#cost">04 / The cost</a><a href="#repro">⌗ Reproduce</a>
@@ -70,12 +70,12 @@
 <!-- ============ THEN / NOW ============ -->
 <section class="strip reveal" aria-label="Then and now">
   <div class="tn">
-    <p class="tn-h"><span class="mk">Human Genome Project · 2003</span>One genome, finished</p>
-    <p>~$3&nbsp;billion. Thirteen years. A building full of sequencers. The reference you'll fork below is its great-grandchild.</p>
+    <p class="tn-h"><span class="mk">Human Genome Project · 2003</span>$3 billion, once</p>
+    <p>~$3&nbsp;billion and thirteen years, to read a single human genome one time. Reading DNA was the whole problem.</p>
   </div>
   <div class="tn now">
-    <p class="tn-h"><span class="mk hot">This page · now</span>278&nbsp;Mb, on a whim</p>
-    <p>GRCh38 is a public file and the compute is a snapshot you fork five ways — <strong data-bind="map_wallclock_sec_round">~15</strong>&nbsp;seconds, pennies, no DNA left behind.</p>
+    <p class="tn-h"><span class="mk hot">Sequencing · 2024</span>~$100 a genome</p>
+    <p>Ultima's <a href="https://www.statnews.com/2024/01/30/ultima-genomics-dna-sequencing-100-dollars/">UG&nbsp;100</a> reads a 30× human genome for about $100 (≈$80 in 2025). Reading DNA isn't the cost anymore — <strong>computing on it is</strong>, and the reference you compute against is the part that won't fit in your pocket.</p>
   </div>
 </section>
 
@@ -94,7 +94,8 @@
 <!-- ============ 02 THE PROCESS ============ -->
 <section id="process" class="sec alt">
   <header class="sec-h reveal"><span class="idx">02</span><h2>The process: warm → snapshot → fork → reduce</h2><span class="sec-line"></span></header>
-  <p class="lead reveal">Here is the entire experiment, in the order it happened. No step is clever. The one idea is that the reference genome is <em>read-only</em> — so you should only ever pay to load it once. MapReduce's real trick was never "go parallel"; it was broadcasting that read-only base once. <strong>A VM snapshot is that broadcast.</strong></p>
+  <p class="lead reveal">In a real genomics pipeline the expensive state is read-only and shared: the reference FASTA and its derived indices. A GRCh38 FASTA is about 3&nbsp;GB; a BWA-MEM index adds ~5&nbsp;GB, a STAR index 27–30&nbsp;GB (and wants ~30&nbsp;GB of RAM resident), plus GATK known-sites bundles — <b>8–40&nbsp;GB of immutable bytes</b> that never change during a run. Best-practice workflows (<a href="https://pubmed.ncbi.nlm.nih.gov/32055031/">nf-core</a>, GATK Best Practices) scatter-gather over hundreds of intervals — a HaplotypeCaller run is routinely fanned across 50–1000 shards — and the conventional answer re-localizes that identical reference to every task — re-downloading multi-gigabyte indices per shard, and re-staging them again on every spot/preemptible interruption.</p>
+  <p class="lead reveal"><strong>Snapshot-fork inverts it.</strong> Warm one worker — open the reference, load the indices, page them resident — then snapshot that initialized address space once. Each shard is a restore-and-fork from that snapshot, the mechanism Firecracker and Lambda SnapStart already use: restore maps the saved memory <code>MAP_PRIVATE</code>, so the reference and index pages are shared copy-on-write and only the pages a fork actually <i>writes</i> diverge. The analysis never writes the index, so it stays shared. Broadcasting the reference to the (N+1)th shard costs a page-table setup, not another multi-gigabyte read — and it's byte-identical by construction, because every fork maps the same physical pages instead of doing N independent loads that merely ought to agree.</p>
 
   <ol class="ladder reveal" id="pattern-steps">
     <li><span class="rung">Warm — build the base once <span class="rt">24.1s</span></span><span class="d">Boot one machine and let it do the expensive, boring part exactly once: pull the GRCh38 chromosomes, build the index, load the libraries, settle the page cache. Twenty-four seconds nothing downstream should ever repeat — the moment before the broadcast.</span></li>
@@ -146,8 +147,9 @@
     <p class="calc-note" id="tworead-cap">// raw benchmark output — CpG-island candidates per megabase.</p>
   </figure>
 
-  <p class="bear reveal" id="aha"><span class="mk">the ranking is gene density</span>Sorted by island count, the chromosomes line up by gene density: <b data-bind="biology.chr19_density">287.6</b> islands/Mb on <b>chr19</b>, the most gene-dense human chromosome, down to <b data-bind="biology.chrY_density">79.7</b> on <b>chrY</b>, a gene desert. That ordering is well established in the literature; here it falls out of a job that was only trying to measure speed. That's the correctness check — the biology has to come out right.</p>
-  <p class="calc-note reveal" id="aha-caveat">// island density is a proxy for gene density, not a measurement of it. Real fact, honest method, small sample (n=5). The loose 1987 rule and the tighter Takai &amp; Jones (2002) rule agree on the gradient — which is all a correctness check needs.</p>
+  <p class="bear reveal" id="aha"><span class="mk">this is a positive control, not a discovery</span>CpG-island density is known to rise with gene density, so a <em>correct</em> scatter-gather must reproduce that gradient. The five chromosomes come back ordered chr19 (densest, <b data-bind="biology.chr19_density">287.6</b> islands per sequenced Mb) down to chrY (a gene desert, <b data-bind="biology.chrY_density">79.7</b>) — exactly what a working map-reduce should yield. The relationship has been in the literature for decades (Gardiner-Garden &amp; Frommer 1987; Takai &amp; Jones 2002; chr19 carries ~25 protein-coding genes/Mb, roughly double the genome average, Grimwood et&nbsp;al., <i>Nature</i> 2004).</p>
+  <p class="bear reveal">The value isn't the biology — it's that recovering a known gradient from an independently written kernel tells you the sharding, the per-shard compute, and the reduce step are all wired correctly. A broken fan-out — a dropped shard, a coordinate off-by-one, double-counted bins — would distort it. The ordering is broad, not exact: chr20 (112.0) and chr21 (111.9 per sequenced Mb) are effectively tied even though chr20 is the more gene-rich, and these five were chosen, not sampled. Counts are per <i>sequenced</i> (non-N) megabase — chrY reads 79.7 there but only ~36.8 per total Mb, since over half of GRCh38 chrY is unsequenced heterochromatin. Recovering the gradient is <em>consistent with</em> a correct pipeline, not proof of one: a positive control, not a unit test.</p>
+  <p class="calc-note reveal" id="aha-caveat">// CpG-island density is a coarse, one-directional proxy for gene density, not a measurement of it: many genes have no CpG-island promoter (islands undercount them), an algorithmic <i>candidate</i> island is a sequence-composition call rather than an annotated promoter, and this run reads islands off the reference — it never measures methylation, which is cell-type-specific and absent from the sequence.</p>
 
   <!-- karyotype landscape -->
   <figure class="kary-wrap reveal" aria-label="Per-chromosome CpG / GC landscape">
@@ -193,7 +195,7 @@
     </div>
   </div>
 
-  <p class="kicker reveal"><span class="mk">the honest version</span>First run: a modest <strong data-bind="economics.speedup_fanout">2.3×</strong>, and I'll say so. The real win is the <em>second</em> question you ask — 7.4× on rerun, because the broadcast is already frozen. Swap the 72&nbsp;MB of test chromosomes for a real 3&nbsp;GB reference plus BWA indices, fan out across a whole cohort, and the snapshot stops being an optimization and becomes the only sane way to do it. <strong>Every fork also starts byte-identical</strong> — which is reproducibility, the thing genomics actually grades you on.</p>
+  <p class="kicker reveal"><span class="mk">the honest version</span>First run: a modest <strong data-bind="economics.speedup_fanout">2.3×</strong>, and I'll say so. The real win is the <em>second</em> question you ask — 7.4× on rerun, because the broadcast is already frozen. <strong>Honest scope:</strong> this warm-up is a 72&nbsp;MB toy, tiny next to the 3&nbsp;GB FASTA and 5–30&nbsp;GB indices a real alignment resident set holds — so this shows the <em>mechanism</em>, not the at-scale economics. And a snapshot restores cleanly only on a compatible CPU/kernel; copy-on-write sharing holds only for pages nobody writes; byte-identical <i>output</i> still means pinning clocks, RNG seeds, and scratch state.</p>
 </section>
 
 <!-- ============ 05 WHY AN AGENT WANTS THIS ============ -->
@@ -201,9 +203,9 @@
   <header class="sec-h reveal"><span class="idx">05</span><h2>Why an agent wants this</h2><span class="sec-line"></span></header>
   <p class="lead reveal">The reason to run genomics this way isn't the speedup. It's that the analysis above was written and executed by software, not a person — and that only works if the computer is disposable.</p>
   <ol class="why">
-    <li class="reveal"><b>Model-written code is untrusted.</b> When an agent writes the bioinformatics, no one reads every line before it runs. A sandbox bounds the blast radius — it touches its one shard and nothing else, then it's destroyed. That's the precondition for letting a model loose on real data.</li>
-    <li class="reveal"><b>Genomics is the right shape for it.</b> The work is naturally per-sample, per-chromosome, per-hypothesis: thousands of small, independent runs. The snapshot makes the shared reference cheap to broadcast, disposability keeps each run safe, and byte-identical forks make results reproducible — the part science actually grades.</li>
-    <li class="reveal"><b>This run proves the loop.</b> No human ran it. An agent called four islo verbs — warm, snapshot, fork, reduce — read the per-shard JSON back, and tore the boxes down afterward. The lab is ephemeral, and there can be a thousand of them at once.</li>
+    <li class="reveal"><b>Untrusted model code gets disposable isolation.</b> A model-written pipeline is code you didn't review, running against your reference data. Each shard is a fork off a clean, known-good warmed image; it runs and is discarded. A buggy or adversarial pipeline can only corrupt its own copy-on-write pages — the shared read-only reference is never writable, so it can't be mutated across shards.</li>
+    <li class="reveal"><b>Reference broadcast is O(1) and byte-identical.</b> Agents drive fan-out into the thousands — parameter sweeps, per-sample and per-interval reruns, per-tool variants — where the only shared thing is the expensive 8–40&nbsp;GB reference state. Copy-on-write forking makes the marginal cost of the thousandth shard a page-table setup, not a thousandth multi-gigabyte load — and every fork provably starts from the identical physical pages, not N loads that merely should agree.</li>
+    <li class="reveal"><b>Positive controls make model output trustworthy.</b> Model output is only trustworthy if it's reproducible and checked. Baking a known-answer control into the warm-up — here, the CpG-island/gene-density gradient — gives each fork a ground-truth check it must reproduce before its real result is trusted. Byte-identical input pages plus a positive control turn "the model ran something" into "the model ran something that passed a check."</li>
   </ol>
   <p class="bear reveal"><span class="mk">the point</span>An agent's lab shouldn't be a server it has to keep clean. It should be a computer it can throw away.</p>
 </section>
@@ -246,7 +248,7 @@ python3 reduce.py *.json &gt; landscape.json</code></pre>
 
 <!-- ============ FOOTER ============ -->
 <footer class="foot">
-  <p><b>I timed a VM, and the genes showed up</b> — by <a href="https://www.linkedin.com/in/yossi-eliaz">Yossi Eliaz</a> · <a href="https://x.com/YossiEliaz">@YossiEliaz</a> · built on <a href="https://islo.dev">islo.dev</a> · 2026.</p>
+  <p><b>Warm one box. Fork the genome.</b> — by <a href="https://www.linkedin.com/in/yossi-eliaz">Yossi Eliaz</a> · <a href="https://x.com/YossiEliaz">@YossiEliaz</a> · built on <a href="https://islo.dev">islo.dev</a> · 2026.</p>
   <p>Real run on <a href="https://islo.dev">islo.dev</a> · reference GRCh38 (UCSC goldenPath) · every number fetched live from <a href="./data/receipts.json">receipts.json</a>.</p>
   <p>More: <a href="https://zozo123.github.io/sandboxes-why-how-when/">The Sandbox Shift</a> · <a href="https://zozo123.github.io/the-living-layer/">The Living Layer</a> · <a href="https://zozo123.github.io/databases-in-the-ai-era/">Databases in the AI Era</a>.</p>
   <p class="disc">Not medical advice. This is an engineering demo that computes sequence statistics on the <em>public</em> human reference; it is not a clinical test, not a diagnosis, and says nothing about any individual. CpG-island counts are candidate calls (Gardiner-Garden &amp; Frommer 1987; cf. Takai &amp; Jones 2002), not curated annotations. The map-reduce / snapshot-fork mechanism is standard systems infrastructure (CRIU, Firecracker COW restore, AWS Lambda SnapStart) pointed at a genomics fan-out — nothing about it is claimed as new. Do not make health decisions from a benchmark.</p>

@@ -1,25 +1,31 @@
-# I timed a VM, and the genes showed up
+# Warm one box. Fork the genome.
 
-**Map-reduce the human genome on disposable sandboxes — a real, reproducible demo on [islo.dev](https://islo.dev).**
+**Reference broadcast by VM snapshot — a real, reproducible genomics demo on [islo.dev](https://islo.dev).**
 
 🔗 **Live:** https://zozo123.github.io/genomics-sandboxes/
 
-![I timed a VM, and the genes showed up](./og.png)
+![Warm one box. Fork the genome.](./og.png)
 
 ---
 
-I was benchmarking VM snapshots, not doing biology. The setup: warm one box with the
-reference genome + toolchain + index, snapshot it, fork it per chromosome, reduce. The point
-was to measure how much a *frozen* reference speeds up the next run.
+Sequencing collapsed to ~$100 a genome ([Ultima UG 100](https://www.statnews.com/2024/01/30/ultima-genomics-dna-sequencing-100-dollars/), 2024; ~$80 in 2025).
+Reading DNA isn't the cost anymore — computing on it is, and the expensive part is the
+*read-only* state every pipeline shares: the reference FASTA (~3 GB) and its indices (BWA ~5 GB,
+STAR 27–30 GB, plus GATK bundles) — 8–40 GB of immutable bytes. Best-practice scatter-gather
+workflows ([nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/), GATK Best Practices) fan a run
+across 50–1000 shards and re-localize that identical reference to every one of them.
 
-The per-chromosome counts came back ranked by gene density — chr19 (the most gene-dense human
-chromosome) on top, chrY (a gene desert) at the bottom. That ordering is well established; here
-it falls out of an infrastructure benchmark as a side effect. It doubles as a correctness check.
+**The one idea: a VM snapshot is the reference broadcast.** Warm one box (open the reference,
+load the indices, page them resident), snapshot the initialized address space, and fork it
+copy-on-write per shard — the same mechanism Firecracker and Lambda SnapStart use. The (N+1)th
+shard costs a page-table setup, not another multi-GB read, and every fork is byte-identical
+because they map the same physical pages.
 
-The one idea worth keeping: **a VM snapshot is the MapReduce "broadcast."** The reference genome
-is read-only, so you should only pay to load it once. Warm a box, freeze it, and hand each
-worker a copy that already has it. The genome travels to the workers *once*; the workers are
-disposable.
+I validated the fan-out against a **positive control**, not a discovery: per-chromosome
+CpG-island density is known to track gene density, so a correct map-reduce *must* return chr19
+(most gene-dense) on top and chrY (a gene desert) at the bottom. It does. Recovering a known
+gradient from an independently written kernel is evidence the sharding, compute, and reduce are
+all wired correctly — exactly the check you want when the pipeline is model-written.
 
 ## What it computes
 
