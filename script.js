@@ -194,20 +194,17 @@
       { lab: "fork · map · reduce", sec: r.map_wallclock_sec || 14.8, cls: "tl-map" }
     ];
     var total = phases.reduce(function (a, p) { return a + p.sec; }, 0);
-    host.innerHTML = "";
+    var bar = '<div class="tl-bar">';
     phases.forEach(function (p) {
-      var seg = document.createElement("div");
-      seg.className = "tl-seg " + p.cls;
-      seg.style.flexGrow = String(p.sec);
-      seg.style.flexBasis = "0";
-      seg.innerHTML = '<span class="tl-lab">' + p.lab + '</span><span class="tl-sec">' + p.sec.toFixed(1) + 's</span>';
-      seg.title = p.lab + " · " + p.sec.toFixed(1) + "s";
-      host.appendChild(seg);
+      bar += '<div class="tl-seg ' + p.cls + '" style="flex-grow:' + p.sec + '" title="' + p.lab + ' · ' + p.sec.toFixed(1) + 's"><span class="tl-sec">' + p.sec.toFixed(1) + 's</span></div>';
     });
-    var cap = document.createElement("div");
-    cap.className = "tl-total";
-    cap.textContent = "first warm run, end to end: " + total.toFixed(1) + "s · every rerun after, reusing the snapshot: " + (r.map_wallclock_sec || 14.8).toFixed(1) + "s";
-    host.appendChild(cap);
+    bar += "</div>";
+    var legend = '<div class="tl-legend">';
+    phases.forEach(function (p) {
+      legend += '<span><i class="tl-sw ' + p.cls + '"></i>' + p.lab + " " + p.sec.toFixed(1) + "s</span>";
+    });
+    legend += '<span class="tl-tot">first run ' + total.toFixed(1) + "s · rerun " + (r.map_wallclock_sec || 14.8).toFixed(1) + "s</span></div>";
+    host.innerHTML = bar + legend;
   }
 
   /* ---------- the two-reading bar: an infra metric that is a biology fact ---------- */

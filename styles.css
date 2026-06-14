@@ -263,17 +263,16 @@ h1 .dot { color: var(--hot); }
 /* ============ PROCESS TIMELINE ============ */
 .timeline { margin:1.8rem 0 0; }
 .timeline figcaption { display:block; margin-bottom:.7rem; }
-.proc-timeline { display:flex; gap:3px; align-items:stretch; }
-.tl-seg { display:flex; flex-direction:column; justify-content:center; gap:.2rem; min-width:0;
-  padding:.7rem .8rem; border-radius:2px; color:#fff; overflow:hidden; }
+.tl-bar { display:flex; gap:2px; height:2.4rem; border-radius:2px; overflow:hidden; }
+.tl-seg { display:flex; align-items:center; justify-content:center; min-width:0; color:#fff; }
 .tl-warm { background:#8c7a55; }
 .tl-snap { background:var(--hot); }
 .tl-map  { background:var(--ink); }
-.tl-lab { font-family:var(--mono); font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; opacity:.92; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.tl-sec { font-family:var(--display); font-weight:700; font-size:1.05rem; line-height:1; }
-.tl-total { flex-basis:100%; font-family:var(--mono); font-size:.7rem; color:var(--ink-2);
-  letter-spacing:.02em; margin-top:.6rem; }
-@media (max-width:560px){ .tl-lab{ font-size:.56rem } .tl-sec{ font-size:.85rem } }
+.tl-sec { font-family:var(--mono); font-size:.72rem; font-weight:600; white-space:nowrap; padding:0 .2rem; }
+.tl-legend { display:flex; flex-wrap:wrap; gap:.45rem 1.2rem; margin-top:.8rem;
+  font-family:var(--mono); font-size:.7rem; letter-spacing:.02em; color:var(--ink-2); }
+.tl-sw { display:inline-block; width:.8rem; height:.8rem; border-radius:1px; margin-right:.45rem; vertical-align:-1px; }
+.tl-tot { color:var(--ink); font-weight:600; }
 
 /* ============ TWO-READING BAR (the climax) ============ */
 .tworead { margin:1.6rem 0 1.4rem; }
@@ -299,6 +298,33 @@ h1 .dot { color: var(--hot); }
   font-size:clamp(1.15rem,2.6vw,1.6rem); color:#fff; line-height:1.25; max-width:30ch;
   margin:0 auto 1.4rem; padding-bottom:1.2rem; border-bottom:1px solid rgba(255,255,255,.16); }
 .foot .foot-drop em { color:var(--hot); font-style:italic; }
+
+/* ============ ABSTRACT / BYLINE / CITATIONS / REFERENCES ============ */
+.byline { font-family:var(--mono); font-size:.78rem; letter-spacing:.03em; color:var(--ink-2); margin:.2rem 0 0; }
+.byline a { color:var(--hot-2); }
+.abstract { max-width:76ch; margin:1.5rem 0 2.2rem; font-size:1.02rem; line-height:1.6; color:var(--ink); }
+.abstract .mk { display:inline; margin-right:.5rem; }
+.abstract b { font-weight:600; }
+a[href^="#ref-"] { text-decoration:none; color:var(--hot-2); font-family:var(--mono);
+  font-size:.72em; vertical-align:super; line-height:0; padding:0 .04em; }
+a[href^="#ref-"]:hover { color:var(--ink); }
+.refs { max-width:78ch; margin:1.2rem 0 0; padding-left:1.7rem; }
+.refs li { font-size:.9rem; line-height:1.5; color:var(--ink-2); padding:.4rem 0; border-top:1px solid var(--rule); }
+.refs li:first-child { border-top:0; }
+.refs li i { color:var(--ink); font-style:italic; }
+.refs li a { color:var(--hot-2); }
+
+/* ============ CTA (islo.dev / coupon) ============ */
+.cta { margin:2.2rem 0 0; background:var(--ink); color:#d6cdbb; border-radius:3px;
+  border-left:5px solid var(--hot); padding:1.5rem 1.6rem; max-width:66ch; }
+.cta .cta-k { font-family:var(--mono); text-transform:uppercase; letter-spacing:.18em;
+  font-size:.66rem; color:#b3a98f; margin:0 0 .5rem; }
+.cta .cta-h { font-family:var(--display); font-weight:700; font-size:clamp(1.2rem,2.6vw,1.5rem);
+  color:#fff; margin:0 0 .6rem; line-height:1.15; }
+.cta .cta-b { margin:0; font-size:.98rem; line-height:1.55; }
+.cta a { color:var(--hot); }
+.cta .cta-code { background:var(--hot); color:#fff; font-weight:600; padding:.12em .55em;
+  border-radius:2px; font-size:.9em; letter-spacing:.04em; }
 
 /* ============ MOTION ============ */
 @keyframes fade { from {opacity:0; transform:translateY(8px);} to {opacity:1; transform:none;} }
