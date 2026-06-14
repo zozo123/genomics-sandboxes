@@ -1,1 +1,3 @@
 data/*.out* ignored
+data/_*.out
+data/_*.out.err
