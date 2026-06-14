@@ -2,12 +2,12 @@
 
 ## Title (pick one)
 
-1. **Show HN: Map-reducing the human genome on disposable sandboxes**
-2. Show HN: A VM snapshot is the MapReduce broadcast (genomics demo)
-3. Show HN: Bring Your Own Genome – analyze DNA on computers that self-destruct
+1. **Show HN: I timed VM snapshots on genomics, and the genes showed up**
+2. Show HN: Map-reducing the human genome on disposable sandboxes
+3. Show HN: A VM snapshot is the MapReduce broadcast (genomics demo)
 4. Show HN: I forked a warm reference-genome sandbox per chromosome
 
-→ Recommend **#1** as the submission title (concrete, technical, no hype).
+→ Recommend **#1 or #2** (concrete, no hype; #1 leads with the surprise, #2 with the method).
 URL: https://zozo123.github.io/genomics-sandboxes/
 
 ## First comment (author)

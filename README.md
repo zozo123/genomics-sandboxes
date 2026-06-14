@@ -1,20 +1,25 @@
-# Bring Your Own Genome
+# I timed a VM, and the genes showed up
 
 **Map-reduce the human genome on disposable sandboxes — a real, reproducible demo on [islo.dev](https://islo.dev).**
 
 🔗 **Live:** https://zozo123.github.io/genomics-sandboxes/
 
-![Bring Your Own Genome](./og.png)
+![I timed a VM, and the genes showed up](./og.png)
 
 ---
 
-A decade ago, reading the methylation landscape of your chromosomes meant a wet lab, a
-compute cluster, and a bioinformatics team. This repo does it from a laptop in **~15 seconds**
-by renting five throwaway computers for the length of a sip of coffee — then throwing them away.
+I was benchmarking VM snapshots, not doing biology. The setup: warm one box with the
+reference genome + toolchain + index, snapshot it, fork it per chromosome, reduce. The point
+was to measure how much a *frozen* reference speeds up the next run.
 
-It's a working illustration of one idea: **a VM snapshot is the MapReduce "broadcast."**
-Warm one box with the reference genome + toolchain + index, freeze it, and fork it per
-chromosome. The genome travels to the workers *once*; the workers are disposable.
+The per-chromosome counts came back ranked by gene density — chr19 (the most gene-dense human
+chromosome) on top, chrY (a gene desert) at the bottom. That ordering is well established; here
+it falls out of an infrastructure benchmark as a side effect. It doubles as a correctness check.
+
+The one idea worth keeping: **a VM snapshot is the MapReduce "broadcast."** The reference genome
+is read-only, so you should only pay to load it once. Warm a box, freeze it, and hand each
+worker a copy that already has it. The genome travels to the workers *once*; the workers are
+disposable.
 
 ## What it computes
 

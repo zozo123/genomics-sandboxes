@@ -183,11 +183,74 @@
     recompute();
   }
 
+  /* ---------- process timeline (3 measured phases, true proportions) ---------- */
+  function renderTimeline(r) {
+    var host = document.getElementById("proc-timeline");
+    if (!host || !r) return;
+    var snap = (r.snapshot && r.snapshot.save_sec) || 3.9;
+    var phases = [
+      { lab: "warm", sec: r.warmup_sec || 24.1, cls: "tl-warm" },
+      { lab: "snapshot", sec: snap, cls: "tl-snap" },
+      { lab: "fork · map · reduce", sec: r.map_wallclock_sec || 14.8, cls: "tl-map" }
+    ];
+    var total = phases.reduce(function (a, p) { return a + p.sec; }, 0);
+    host.innerHTML = "";
+    phases.forEach(function (p) {
+      var seg = document.createElement("div");
+      seg.className = "tl-seg " + p.cls;
+      seg.style.flexGrow = String(p.sec);
+      seg.style.flexBasis = "0";
+      seg.innerHTML = '<span class="tl-lab">' + p.lab + '</span><span class="tl-sec">' + p.sec.toFixed(1) + 's</span>';
+      seg.title = p.lab + " · " + p.sec.toFixed(1) + "s";
+      host.appendChild(seg);
+    });
+    var cap = document.createElement("div");
+    cap.className = "tl-total";
+    cap.textContent = "first warm run, end to end: " + total.toFixed(1) + "s · every rerun after, reusing the snapshot: " + (r.map_wallclock_sec || 14.8).toFixed(1) + "s";
+    host.appendChild(cap);
+  }
+
+  /* ---------- the two-reading bar: an infra metric that is a biology fact ---------- */
+  function renderTwoRead(r) {
+    var host = document.getElementById("tworead");
+    var dens = r && r.biology && r.biology.island_density_per_mb;
+    if (!host || !dens) return;
+    var rows = Object.keys(dens).map(function (c) { return { chr: c, v: dens[c] }; })
+      .sort(function (a, b) { return b.v - a.v; });
+    var max = rows[0].v || 1;
+    host.innerHTML = "";
+    rows.forEach(function (row) {
+      var el = document.createElement("div");
+      el.className = "tworead-row";
+      var w = (100 * row.v / max).toFixed(1) + "%";
+      el.innerHTML = '<span class="tworead-name">' + row.chr + '</span>' +
+        '<span class="tworead-bar' + (row.chr === "chr19" ? " hot" : "") + '" style="--w:' + w + '"></span>' +
+        '<span class="tworead-val">' + row.v.toFixed(1) + '</span>';
+      host.appendChild(el);
+    });
+    var fig = host.closest(".tworead");
+    var lab = document.getElementById("tworead-axis-lab");
+    var cap = document.getElementById("tworead-cap");
+    function reveal() {
+      if (!fig || fig.classList.contains("revealed")) return;
+      fig.classList.add("revealed");
+      if (lab) { lab.classList.add("swap"); lab.textContent = "gene density (GRCh38, established)"; }
+      if (cap) cap.textContent = "// same bars, relabeled. that ordering is the gene-density gradient.";
+    }
+    var aha = document.getElementById("aha");
+    if (reduceMotion || !("IntersectionObserver" in window) || !aha) { reveal(); return; }
+    var io2 = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { reveal(); io2.unobserve(e.target); } });
+    }, { threshold: 0.5 });
+    io2.observe(aha);
+  }
+
   /* ---------- boot: fetch real data, degrade gracefully ---------- */
   function boot(r, land) {
     if (r) { try { bindLive(r); } catch (e) {} receipts = r; }
     if (land) landscape = land;
     setupFork(r);
+    if (r) { renderTimeline(r); renderTwoRead(r); }
     setupKaryToggle();
     if (land) renderKary(); else { var k = document.getElementById("kary"); if (k) k.innerHTML = '<p class="calc-note">landscape data unavailable</p>'; }
     setupCalc(r);
