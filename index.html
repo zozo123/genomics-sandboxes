@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bring Your Own Genome — map-reducing the human genome on disposable sandboxes</title>
+  <meta name="description" content="A decade ago, reading the methylation landscape of your chromosomes meant a wet lab and a cluster. Here it runs from a laptop in ~15 seconds: shard the genome by chromosome, fork one warm reference snapshot, scan for CpG islands, reduce — on computers that vanish. A real, reproducible demo on islo.dev.">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#1a1712">
+
+  <link rel="canonical" href="https://zozo123.github.io/genomics-sandboxes/">
+  <meta name="author" content="Yossi Eliaz">
+
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://zozo123.github.io/genomics-sandboxes/">
+  <meta property="og:title" content="Bring Your Own Genome">
+  <meta property="og:description" content="The human genome is just data now. Shard it by chromosome, fork one warm reference snapshot, scan for the methylation switches your cells actually use — on disposable computers, from a laptop, in ~15 seconds.">
+  <meta property="og:image" content="https://zozo123.github.io/genomics-sandboxes/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Bring Your Own Genome — map-reduce the human genome on disposable sandboxes.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Bring Your Own Genome">
+  <meta name="twitter:description" content="Map-reduce the human genome on disposable sandboxes. Real demo, real numbers, real biology.">
+  <meta name="twitter:image" content="https://zozo123.github.io/genomics-sandboxes/og.png">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%231a1712'/%3E%3Cg stroke='%23e5421f' stroke-width='4' fill='none'%3E%3Cpath d='M22 10c20 9 -20 35 0 44'/%3E%3Cpath d='M42 10c-20 9 20 35 0 44'/%3E%3C/g%3E%3Cg stroke='%23e5421f' stroke-width='3'%3E%3Cline x1='24' y1='20' x2='40' y2='20'/%3E%3Cline x1='24' y1='32' x2='40' y2='32'/%3E%3Cline x1='24' y1='44' x2='40' y2='44'/%3E%3C/g%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+
+  <script>document.documentElement.classList.add('js')</script>
+  <link rel="stylesheet" href="styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Bring Your Own Genome",
+    "description": "Map-reduce the human genome on disposable sandboxes: shard by chromosome, fork one warm reference snapshot, scan for CpG islands, reduce. A real, reproducible demo on islo.dev.",
+    "url": "https://zozo123.github.io/genomics-sandboxes/",
+    "image": "https://zozo123.github.io/genomics-sandboxes/og.png",
+    "datePublished": "2026-06-14",
+    "author": { "@type": "Person", "name": "Yossi Eliaz", "url": "https://www.linkedin.com/in/yossi-eliaz" }
+  }
+  </script>
+</head>
+<body>
+<a class="skip" href="#why">Skip to content</a>
+
+<!-- ============ MASTHEAD ============ -->
+<header class="mast">
+  <div class="rule-top"><span>BRING YOUR OWN GENOME</span><span>FIELD&nbsp;MANUAL · No.07</span><span>2026</span></div>
+  <h1 class="load" style="--d:.05s">Your genome<br>is just data<br>now<span class="dot">.</span></h1>
+  <p class="thesis load" style="--d:.18s">
+    Reading it used to mean a <em>wet lab</em>, a <em>cluster</em>, and a bioinformatics team.
+    This page does it from a laptop — by renting <em>five throwaway computers</em> for the length of a sip of coffee.
+  </p>
+  <p class="claim load" style="--d:.3s">The genome got cheap to read. <strong>The computer to read it on just got disposable.</strong></p>
+  <p class="def load" style="--d:.4s"><span class="mk">CpG island · the thing we scan for</span>A short stretch where the letters <code>C</code> and <code>G</code> sit together far more than chance — usually parked at the start of a gene. Whether it's chemically <i>methylated</i> is one of biology's master switches: it's what epigenetic age clocks read, what cancer screens watch, and what makes a neuron differ from a skin cell with identical DNA.</p>
+  <nav class="jump load" style="--d:.5s" aria-label="Sections">
+    <a href="#why">01 / Why it's personal</a><a href="#pattern">02 / The pattern</a><a href="#run">03 / The run</a><a href="#cost">04 / The cost</a><a href="#repro">⌗ Reproduce</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============ THEN / NOW ============ -->
+<section class="strip reveal" aria-label="Then and now">
+  <div class="tn">
+    <p class="tn-h"><span class="mk">Human Genome Project · 2003</span>One genome, finished</p>
+    <p>~$3&nbsp;billion. Thirteen years. An international consortium. The reference you'll fork below is its great-grandchild.</p>
+  </div>
+  <div class="tn now">
+    <p class="tn-h"><span class="mk hot">This page · now</span>278&nbsp;Mb scanned</p>
+    <p>Five chromosomes, five disposable computers, <strong data-bind="map_wallclock_sec_round">~15</strong>&nbsp;seconds of compute, pennies of machine time. No lab. No cluster. No DNA left behind.</p>
+  </div>
+</section>
+
+<!-- ============ 01 WHY IT'S PERSONAL ============ -->
+<section id="why" class="sec">
+  <header class="sec-h reveal"><span class="idx">01</span><h2>Why it's personal</h2><span class="sec-line"></span></header>
+  <p class="lead reveal">In March 2025, 23andMe filed for bankruptcy. The DNA of <b>15&nbsp;million people</b> became an asset for sale; twenty-seven state attorneys general sued to stop it; traffic to the delete-your-data page jumped <b>526%</b> in a day. The lesson the self-genomics crowd took from it was simple: <em>don't park your genome in a company's permanent database.</em></p>
+  <ol class="why">
+    <li class="reveal"><b>You can just read it yourself.</b> A 23andMe export, a Nebula or Nucleus whole-genome file, the public reference — it's all just text: four letters, a few billion times. The barrier was never the data. It was the machine.</li>
+    <li class="reveal"><b>The interesting signal is regulatory, not spelling.</b> Most consumer genomics stops at variants. But what your cells <i>do</i> with the same DNA is set by methylation at <span data-bind="genome.cpg_sites">3,201,954</span> CpG sites — the switches behind biological-age clocks, tumor screens, and cell identity. That's what this demo maps.</li>
+    <li class="reveal"><b>A sandbox is a computer that dies on purpose.</b> Analyze your genome on a box that's disposable by design: it boots, reads, reports, and vanishes. Your most personal data never outlives the question you asked of it. That's the opposite of a database that outlives the company.</li>
+  </ol>
+  <p class="bear reveal"><span class="mk">the move</span>Bring your own genome. Shard it, fork a warm reference once, scan, reduce — then throw the computers away.</p>
+</section>
+
+<!-- ============ 02 THE PATTERN ============ -->
+<section id="pattern" class="sec alt">
+  <header class="sec-h reveal"><span class="idx">02</span><h2>The pattern: map-reduce, with a warm broadcast</h2><span class="sec-line"></span></header>
+  <p class="lead reveal">MapReduce's real trick was never "go parallel." It was <em>move the work to where the data already lives, and broadcast the read-only base once</em>. In genomics the read-only base is huge and slow to stage: reference + index + toolchain. So you pay for it once — and <b>freeze it</b>.</p>
+
+  <ol class="ladder reveal" id="pattern-steps">
+    <li><span class="rung">Warm one box</span><span class="d">Install the toolchain, download the reference chromosomes, build the index. The slow part — paid <i>once</i>.</span></li>
+    <li class="sweet"><span class="rung">Snapshot it</span><span class="d">Freeze the warm box to a <span data-bind="snapshot.size">127&nbsp;MB</span> image in <span data-bind="snapshot.save_sec">~4</span>s. This is the MapReduce broadcast: the read-only base, ready to hand to every worker.</span></li>
+    <li><span class="rung">Fork per chromosome</span><span class="d">Each shard restores the snapshot — warm, identical, instant. No re-downloading the genome. These are the mappers.</span></li>
+    <li><span class="rung">Reduce</span><span class="d">Merge the per-shard JSON into one genome-wide landscape. Then delete every box.</span></li>
+  </ol>
+
+  <!-- fork fan-out animation -->
+  <figure class="forkfig reveal" aria-label="Animation: one warm snapshot forks into five map shards, then reduces">
+    <figcaption class="mk">snapshot → fork → map → reduce</figcaption>
+    <div id="forkstage" class="forkstage" data-state="idle">
+      <div class="fork-warm"><span class="box-tag">warm base</span><span class="box-sub">ref + index + tools</span></div>
+      <div class="fork-snap"><span class="box-tag">snapshot</span><span class="box-sub" data-bind="snapshot.size">127 MB</span></div>
+      <div class="fork-shards" id="fork-shards"></div>
+      <div class="fork-reduce"><span class="box-tag">reduce</span><span class="box-sub">genome-wide</span></div>
+    </div>
+    <button class="btn" id="fork-run" type="button">▶ Replay the fan-out</button>
+  </figure>
+  <p class="kicker reveal"><span class="mk">why a snapshot and not a container image</span>A container image is the cold start: every worker pulls and re-provisions. A <strong>VM snapshot is the warm start</strong> — memory and disk captured at an instant, restored copy-on-write. Same idea as Firecracker microVM snapshots or Lambda SnapStart: skip the boot, skip the staging, fork the finished state.</p>
+</section>
+
+<!-- ============ 03 THE RUN ============ -->
+<section id="run" class="sec">
+  <header class="sec-h reveal"><span class="idx">03</span><h2>The run — and a free correctness check</h2><span class="sec-line"></span></header>
+  <p class="lead reveal">Five human chromosomes from <b>GRCh38</b> — chr19, chr20, chr21, chr22, chrY — <b data-bind="genome.total_bp_mb">278</b>&nbsp;Mb in all. Each shard computes GC% and CpG observed/expected in 1&nbsp;Mb bins, and counts CpG-island candidates (Gardiner-Garden &amp; Frommer: 200&nbsp;bp window, GC&nbsp;&gt;&nbsp;50%, obs/exp&nbsp;&gt;&nbsp;0.6).</p>
+
+  <div class="stats reveal" id="stats">
+    <div class="stat"><span class="mk">chromosomes</span><b data-bind="shards">5</b></div>
+    <div class="stat"><span class="mk">bases scanned</span><b data-bind="genome.total_bp_commas">277,817,649</b></div>
+    <div class="stat"><span class="mk">CpG sites</span><b data-bind="genome.cpg_sites">3,201,954</b></div>
+    <div class="stat hot"><span class="mk">CpG-island candidates</span><b data-bind="genome.cpg_islands">37,374</b></div>
+  </div>
+
+  <p class="lead reveal" style="margin-top:2rem">Here's the tell that the cheap pipeline is <em>real</em>: the answer matches known biology. CpG-island density tracks gene density — and it falls out of the fan-out on its own.</p>
+
+  <!-- karyotype landscape -->
+  <figure class="kary-wrap reveal" aria-label="Per-chromosome CpG / GC landscape">
+    <div class="kary-head">
+      <figcaption class="mk">per-chromosome landscape · 1&nbsp;Mb bins</figcaption>
+      <div class="seg kary-seg" role="tablist" aria-label="Metric">
+        <button role="tab" aria-selected="true" data-metric="cpg_oe" type="button">CpG obs/exp</button>
+        <button role="tab" aria-selected="false" data-metric="gc" type="button">GC&nbsp;%</button>
+      </div>
+    </div>
+    <div id="kary" class="kary"></div>
+    <div class="kary-legend" id="kary-legend"></div>
+  </figure>
+
+  <p class="bear reveal"><span class="mk">the signal</span><b>chr19</b> lights up — <b data-bind="biology.chr19_density">287.6</b> island-candidates per Mb, the densest gene neighborhood in the genome. <b>chrY</b> is a desert — <b data-bind="biology.chrY_density">79.7</b> per Mb. The gene-density gradient, recovered as a by-product of a benchmark. If the map-reduce were wrong, the biology would be wrong. It isn't.</p>
+</section>
+
+<!-- ============ 04 THE COST ============ -->
+<section id="cost" class="sec alt">
+  <header class="sec-h reveal"><span class="idx">04</span><h2>What the snapshot actually buys</h2><span class="sec-line"></span></header>
+  <p class="lead reveal">The naive way: every worker stages the reference itself. The snapshot way: stage once, fork. The first run is faster; the real payoff is every run <em>after</em> — and the redundant work you never do.</p>
+
+  <div class="calc reveal" id="calc">
+    <div class="calc-controls">
+      <label class="calc-row">
+        <span class="mk">shards (chromosomes)</span>
+        <input type="range" id="calc-shards" min="1" max="24" value="5" step="1">
+        <output id="calc-shards-out">5</output>
+      </label>
+      <label class="calc-row">
+        <span class="mk">re-runs (new metric / cohort)</span>
+        <input type="range" id="calc-reruns" min="1" max="50" value="1" step="1">
+        <output id="calc-reruns-out">1</output>
+      </label>
+      <p class="calc-note">Measured: per-shard cold staging <b data-bind="cold_shard_avg_sec">21.9</b>s · warm fork, restore&nbsp;+&nbsp;compute <b data-bind="map_per_shard">~7.6</b>s · snapshot once <b data-bind="snapshot.save_sec">3.9</b>s. Sliders extrapolate from the measured run.</p>
+    </div>
+    <div class="calc-out">
+      <div class="bars" id="calc-bars">
+        <div class="bar-row"><span class="bar-lab">cold fan-out</span><div class="bar"><span class="bar-fill cold" id="bar-cold"></span></div><span class="bar-val" id="val-cold">—</span></div>
+        <div class="bar-row"><span class="bar-lab">snapshot + fork</span><div class="bar"><span class="bar-fill warm" id="bar-warm"></span></div><span class="bar-val" id="val-warm">—</span></div>
+      </div>
+      <div class="calc-head"><span class="big" id="calc-speedup">2.3×</span><span class="mk">faster, this configuration</span></div>
+      <p class="calc-saved" id="calc-saved">Eliminates <b>288 MB</b> of redundant reference downloads and <b>4</b> repeated warm-ups.</p>
+    </div>
+  </div>
+
+  <p class="kicker reveal"><span class="mk">the honest version</span>At this toy scale the first-run wall-clock win is modest — about <strong data-bind="economics.speedup_fanout">2.3×</strong>. Swap the 72&nbsp;MB of test chromosomes for a real 3&nbsp;GB reference plus BWA indices, fan out across a whole cohort, and the snapshot stops being an optimization and becomes the only sane way to do it. <strong>Every fork also starts byte-identical</strong> — which is reproducibility, the thing genomics actually grades you on.</p>
+</section>
+
+<!-- ============ REPRODUCE ============ -->
+<section id="repro" class="sec">
+  <header class="sec-h reveal"><span class="idx">05</span><h2>Reproduce it</h2><span class="sec-line"></span></header>
+  <p class="lead reveal">The whole demo is four verbs of the <a href="https://islo.dev">islo</a> CLI. No Kubernetes, no Nextflow, no cluster account.</p>
+  <pre class="code-block reveal"><code><span class="c"># 1 · warm base: toolchain + GRCh38 chromosomes + index (paid once)</span>
+islo use gx-warm -- bash -lc './warmup.sh chr19 chr20 chr21 chr22 chrY'
+
+<span class="c"># 2 · broadcast: freeze the warm box to a snapshot</span>
+islo snapshot save gx-warm --name genomics-warm
+
+<span class="c"># 3 · MAP: fork one warm box per chromosome, in parallel</span>
+for chr in chr19 chr20 chr21 chr22 chrY; do
+  islo use gx-map-$chr --snapshot genomics-warm -- \
+    python3 compute.py $chr &amp;        <span class="c"># each starts warm, just computes</span>
+done; wait
+
+<span class="c"># 4 · REDUCE: merge per-shard JSON → genome-wide landscape, then delete the boxes</span>
+python3 reduce.py *.json &gt; landscape.json</code></pre>
+  <p class="bear reveal"><span class="mk">source</span>Full kernel, warm-up, orchestrator and the raw receipts behind every number on this page:
+  <a href="https://github.com/zozo123/genomics-sandboxes">github.com/zozo123/genomics-sandboxes</a>.</p>
+</section>
+
+<!-- ============ OBJECTIONS ============ -->
+<section class="sec alt">
+  <header class="sec-h reveal"><span class="idx">⌗</span><h2>Objections</h2><span class="sec-line"></span></header>
+  <div class="obs reveal">
+    <p><b>"This is GC content, not medicine."</b> Correct — and on purpose. It's a transparent, verifiable proxy that exercises the exact pattern real pipelines use (scatter by interval, gather results). Swap the kernel for DeepVariant or a methylation caller; the map-reduce-on-snapshots shape doesn't change.</p>
+    <p><b>"Your island calls are loose."</b> They are <i>candidates</i>. The Gardiner-Garden &amp; Frommer 1987 rule (200&nbsp;bp, GC&nbsp;&gt;&nbsp;50%, obs/exp&nbsp;&gt;&nbsp;0.6) over-calls GC-rich repeats; Takai &amp; Jones (2002) tightened it to 500&nbsp;bp / GC&nbsp;&gt;&nbsp;55% / obs/exp&nbsp;&gt;&nbsp;0.65. The point here is the <i>shape and gradient</i> across chromosomes, which both rules agree on — not a curated annotation like ENCODE's cCRE Registry (Moore et&nbsp;al., <i>Nature</i> 2020).</p>
+    <p><b>"Chromosomes aren't balanced shards."</b> True — chrY is mostly gaps, chr20 is the biggest here. The warm fork wall-clock is set by the slowest shard, which is why real pipelines shard by fixed intervals. The snapshot argument is orthogonal to how you cut the work.</p>
+    <p><b>"Is forking a snapshot really reproducible?"</b> More than re-provisioning is. Every shard restores the same captured disk+memory state, copy-on-write — not "the same Dockerfile, fingers crossed the mirrors agree today."</p>
+    <p><b>"Privacy theater?"</b> The box is ephemeral and isolated, and it's <i>yours</i> for its lifetime. Your genome is analyzed in a computer you control and then destroy — not deposited into a third party's permanent, sellable database.</p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <p><b>Bring Your Own Genome</b> — by <a href="https://www.linkedin.com/in/yossi-eliaz">Yossi Eliaz</a>, 2026.</p>
+  <p>Real run on <a href="https://islo.dev">islo.dev</a> · reference GRCh38 (UCSC goldenPath) · every number fetched live from <a href="./data/receipts.json">receipts.json</a>.</p>
+  <p>More: <a href="https://zozo123.github.io/sandboxes-why-how-when/">The Sandbox Shift</a> · <a href="https://zozo123.github.io/the-living-layer/">The Living Layer</a> · <a href="https://zozo123.github.io/databases-in-the-ai-era/">Databases in the AI Era</a>.</p>
+  <p class="disc">Not medical advice. This is an engineering demo that computes sequence statistics on the <em>public</em> human reference; it is not a clinical test, not a diagnosis, and says nothing about any individual. CpG-island counts are candidate calls (Gardiner-Garden &amp; Frommer 1987; cf. Takai &amp; Jones 2002), not curated annotations. The map-reduce / snapshot-fork mechanism is standard systems infrastructure (CRIU, Firecracker COW restore, AWS Lambda SnapStart) pointed at a genomics fan-out — nothing about it is claimed as new. Do not make health decisions from a benchmark.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

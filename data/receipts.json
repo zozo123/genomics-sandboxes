@@ -1,0 +1,109 @@
+{
+  "snapshot": {
+    "name": "genomics-warm-1781437522",
+    "size": "127.0 MB",
+    "save_sec": 3.89
+  },
+  "warmup_sec": 24.06,
+  "cold_shard_avg_sec": 21.86,
+  "cold_fanout_sec": 34.18,
+  "map_wallclock_sec": 14.81,
+  "warm_shard_times": {
+    "chr19": 7.67,
+    "chr20": 7.67,
+    "chr21": 7.77,
+    "chr22": 7.42,
+    "chrY": 7.79
+  },
+  "cold_shard_times": {
+    "chr19": 24.01,
+    "chr20": 20.85,
+    "chr21": 20.9,
+    "chrY": 21.69
+  },
+  "shards": 5,
+  "genome": {
+    "total_bp": 277817649,
+    "n_bases": 49769195,
+    "gc_pct": 44.47,
+    "cpg_sites": 3201954,
+    "cpg_islands": 37374,
+    "ref": "GRCh38",
+    "chroms": [
+      "chr19",
+      "chr20",
+      "chr21",
+      "chr22",
+      "chrY"
+    ]
+  },
+  "biology": {
+    "island_density_per_mb": {
+      "chr19": 287.6,
+      "chr20": 112.0,
+      "chr21": 111.9,
+      "chr22": 174.0,
+      "chrY": 79.7
+    },
+    "most_island_rich": "chr19",
+    "most_island_poor": "chrY",
+    "signal": "chr19 is CpG-island dense; chrY is a relative desert \u2014 the gene-density gradient, recovered as a by-product."
+  },
+  "economics": {
+    "cold_serial_sec": 109.3,
+    "cold_fanout_sec": 34.18,
+    "warm_first_run_sec": 42.8,
+    "warm_rerun_sec": 14.8,
+    "speedup_fanout": 2.3,
+    "speedup_rerun": 7.4,
+    "redundant_downloads_avoided_mb": 288.0,
+    "redundant_warmups_avoided": 4
+  },
+  "per_chrom": {
+    "chr19": {
+      "length": 58617616,
+      "gc_pct": 47.94,
+      "cpg_count": 1105620,
+      "cpg_oe": 0.329,
+      "cpg_islands": 16809,
+      "n_bases": 176858,
+      "compute_sec": 1.32
+    },
+    "chr20": {
+      "length": 64444167,
+      "gc_pct": 43.8,
+      "cpg_count": 773477,
+      "cpg_oe": 0.252,
+      "cpg_islands": 7162,
+      "n_bases": 499910,
+      "compute_sec": 1.28
+    },
+    "chr21": {
+      "length": 46709983,
+      "gc_pct": 40.94,
+      "cpg_count": 462299,
+      "cpg_oe": 0.275,
+      "cpg_islands": 4484,
+      "n_bases": 6621364,
+      "compute_sec": 0.96
+    },
+    "chr22": {
+      "length": 50818468,
+      "gc_pct": 47.0,
+      "cpg_count": 634646,
+      "cpg_oe": 0.293,
+      "cpg_islands": 6814,
+      "n_bases": 11658691,
+      "compute_sec": 0.97
+    },
+    "chrY": {
+      "length": 57227415,
+      "gc_pct": 40.03,
+      "cpg_count": 225912,
+      "cpg_oe": 0.214,
+      "cpg_islands": 2105,
+      "n_bases": 30812372,
+      "compute_sec": 1.08
+    }
+  }
+}

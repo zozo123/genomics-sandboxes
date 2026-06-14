@@ -1,0 +1,5 @@
+# Minimal config for the genomics-sandboxes demo.
+# The genomics toolchain + reference are installed in a warm-up box, then snapshotted;
+# map shards fork from that snapshot (see README).
+image: docker.io/library/python:3.12-slim
+setup_scripts: []

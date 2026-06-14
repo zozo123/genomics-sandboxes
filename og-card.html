@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{ --paper:#efe7d6; --ink:#1b1813; --ink2:#574f3e; --hot:#e5421f; --hot2:#a62c0b; }
+  *{margin:0;box-sizing:border-box}
+  body{width:1200px;height:630px;background:var(--paper);color:var(--ink);
+    font-family:"Newsreader",serif;overflow:hidden;position:relative;
+    background-image:radial-gradient(circle at 14% 16%, rgba(229,66,31,.07), transparent 40%),
+                     radial-gradient(circle at 90% 84%, rgba(27,24,19,.05), transparent 44%);}
+  .card{padding:64px 70px;height:100%;display:flex;flex-direction:column;justify-content:space-between}
+  .top{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;
+    font-size:15px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink2);
+    border-bottom:1px solid rgba(27,24,19,.34);padding-bottom:16px}
+  .top span:first-child{color:var(--hot)}
+  h1{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:108px;line-height:.9;
+    letter-spacing:-.035em;margin:30px 0 18px}
+  h1 .dot{color:var(--hot)}
+  .sub{font-size:30px;line-height:1.3;max-width:34ch;color:var(--ink);font-weight:400}
+  .sub em{color:var(--hot2);font-style:italic}
+  .stats{display:flex;gap:0;border-top:1px solid rgba(27,24,19,.34)}
+  .stat{flex:1;padding:18px 0 2px;border-right:1px solid rgba(27,24,19,.18)}
+  .stat:last-child{border-right:0}
+  .stat .k{font-family:"IBM Plex Mono",monospace;font-size:13px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--hot2);display:block;margin-bottom:8px}
+  .stat .v{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:40px;letter-spacing:-.02em}
+  .stat.hot .v{color:var(--hot)}
+  .by{font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--ink2);letter-spacing:.04em;margin-top:14px}
+</style></head>
+<body>
+  <div class="card">
+    <div class="top"><span>BRING YOUR OWN GENOME</span><span>FIELD MANUAL · No.07 · 2026</span></div>
+    <div>
+      <h1>The genome is<br>just data now<span class="dot">.</span></h1>
+      <p class="sub">Map-reduce the human genome on <em>disposable</em> sandboxes: snapshot one warm reference, fork per chromosome, reduce.</p>
+    </div>
+    <div>
+      <div class="stats">
+        <div class="stat"><span class="k">chromosomes</span><span class="v">5</span></div>
+        <div class="stat"><span class="k">bases scanned</span><span class="v">278 Mb</span></div>
+        <div class="stat"><span class="k">snapshot</span><span class="v">127 MB</span></div>
+        <div class="stat hot"><span class="k">CpG islands</span><span class="v">37,374</span></div>
+      </div>
+      <p class="by">A real, reproducible demo on islo.dev · Yossi Eliaz</p>
+    </div>
+  </div>
+</body></html>
