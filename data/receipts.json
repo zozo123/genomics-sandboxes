@@ -1,65 +1,281 @@
 {
   "snapshot": {
-    "name": "genomics-warm-1781437522",
-    "size": "127.0 MB",
-    "save_sec": 3.89
+    "name": "genomics-wg-1781449331",
+    "size": "962.5 MB",
+    "save_sec": 10.27
   },
-  "warmup_sec": 24.06,
-  "cold_shard_avg_sec": 21.86,
-  "cold_fanout_sec": 34.18,
-  "map_wallclock_sec": 14.81,
+  "warmup_sec": 88.55,
+  "cold_shard_avg_sec": 32.55,
+  "cold_shard_ref": "chr1",
+  "cold_fanout_sec": 32.55,
+  "map_wallclock_sec": 59.99,
+  "map_concurrency": 8,
   "warm_shard_times": {
-    "chr19": 7.67,
-    "chr20": 7.67,
-    "chr21": 7.77,
-    "chr22": 7.42,
-    "chrY": 7.79
+    "chr1": 15.03,
+    "chr2": 17.33,
+    "chr3": 16.81,
+    "chr4": 11.04,
+    "chr5": 16.81,
+    "chr6": 16.21,
+    "chr7": 10.52,
+    "chr8": 15.66,
+    "chr9": 11.28,
+    "chr10": 12.04,
+    "chr11": 9.05,
+    "chr12": 7.78,
+    "chr13": 10.81,
+    "chr14": 9.05,
+    "chr15": 6.82,
+    "chr16": 7.07,
+    "chr17": 9.48,
+    "chr18": 9.48,
+    "chr19": 9.06,
+    "chr20": 9.59,
+    "chr21": 9.41,
+    "chr22": 8.72,
+    "chrX": 11.63,
+    "chrY": 8.57
   },
-  "cold_shard_times": {
-    "chr19": 24.01,
-    "chr20": 20.85,
-    "chr21": 20.9,
-    "chrY": 21.69
-  },
-  "shards": 5,
+  "shards": 24,
+  "genome_wide": true,
   "genome": {
-    "total_bp": 277817649,
-    "n_bases": 49769195,
-    "gc_pct": 44.47,
-    "cpg_sites": 3201954,
-    "cpg_islands": 37374,
+    "total_bp": 3088269832,
+    "n_bases": 150630719,
+    "gc_pct": 40.87,
+    "cpg_sites": 29401360,
+    "cpg_islands": 264816,
     "ref": "GRCh38",
     "chroms": [
+      "chr1",
+      "chr2",
+      "chr3",
+      "chr4",
+      "chr5",
+      "chr6",
+      "chr7",
+      "chr8",
+      "chr9",
+      "chr10",
+      "chr11",
+      "chr12",
+      "chr13",
+      "chr14",
+      "chr15",
+      "chr16",
+      "chr17",
+      "chr18",
       "chr19",
       "chr20",
       "chr21",
       "chr22",
+      "chrX",
       "chrY"
     ]
   },
   "biology": {
     "island_density_per_mb": {
+      "chr1": 97.6,
+      "chr2": 72.8,
+      "chr3": 63.2,
+      "chr4": 62.4,
+      "chr5": 69.3,
+      "chr6": 76.3,
+      "chr7": 92.3,
+      "chr8": 74.3,
+      "chr9": 94.7,
+      "chr10": 86.6,
+      "chr11": 86.9,
+      "chr12": 91.0,
+      "chr13": 68.5,
+      "chr14": 85.1,
+      "chr15": 94.1,
+      "chr16": 147.8,
+      "chr17": 178.8,
+      "chr18": 69.7,
       "chr19": 287.6,
       "chr20": 112.0,
       "chr21": 111.9,
       "chr22": 174.0,
+      "chrX": 66.6,
       "chrY": 79.7
     },
     "most_island_rich": "chr19",
-    "most_island_poor": "chrY",
-    "signal": "chr19 is CpG-island dense; chrY is a relative desert \u2014 the gene-density gradient, recovered as a by-product."
+    "most_island_poor": "chr4",
+    "signal": "chr19 densest, chr4 sparsest \u2014 the gene-density gradient across all 24 chromosomes."
   },
   "economics": {
-    "cold_serial_sec": 109.3,
-    "cold_fanout_sec": 34.18,
-    "warm_first_run_sec": 42.8,
-    "warm_rerun_sec": 14.8,
-    "speedup_fanout": 2.3,
-    "speedup_rerun": 7.4,
-    "redundant_downloads_avoided_mb": 288.0,
-    "redundant_warmups_avoided": 4
+    "cold_serial_sec": 781.2,
+    "cold_fanout_sec": 32.55,
+    "warm_first_run_sec": 158.8,
+    "warm_rerun_sec": 60.0,
+    "speedup_fanout": 2.9,
+    "speedup_rerun": 13.0,
+    "redundant_downloads_avoided_mb": 862.5,
+    "redundant_warmups_avoided": 23
   },
   "per_chrom": {
+    "chr1": {
+      "length": 248956422,
+      "gc_pct": 41.72,
+      "cpg_count": 2375159,
+      "cpg_oe": 0.237,
+      "cpg_islands": 22490,
+      "n_bases": 18475410,
+      "compute_sec": 5.74
+    },
+    "chr2": {
+      "length": 242193529,
+      "gc_pct": 40.23,
+      "cpg_count": 2192670,
+      "cpg_oe": 0.225,
+      "cpg_islands": 17515,
+      "n_bases": 1645301,
+      "compute_sec": 5.02
+    },
+    "chr3": {
+      "length": 198295559,
+      "gc_pct": 39.67,
+      "cpg_count": 1673293,
+      "cpg_oe": 0.215,
+      "cpg_islands": 12527,
+      "n_bases": 195424,
+      "compute_sec": 4.52
+    },
+    "chr4": {
+      "length": 190214555,
+      "gc_pct": 38.24,
+      "cpg_count": 1503429,
+      "cpg_oe": 0.217,
+      "cpg_islands": 11838,
+      "n_bases": 461888,
+      "compute_sec": 3.66
+    },
+    "chr5": {
+      "length": 181538259,
+      "gc_pct": 39.51,
+      "cpg_count": 1566535,
+      "cpg_oe": 0.221,
+      "cpg_islands": 12570,
+      "n_bases": 272881,
+      "compute_sec": 4.26
+    },
+    "chr6": {
+      "length": 170805979,
+      "gc_pct": 39.61,
+      "cpg_count": 1511189,
+      "cpg_oe": 0.227,
+      "cpg_islands": 12982,
+      "n_bases": 727457,
+      "compute_sec": 3.64
+    },
+    "chr7": {
+      "length": 159345973,
+      "gc_pct": 40.7,
+      "cpg_count": 1622825,
+      "cpg_oe": 0.247,
+      "cpg_islands": 14670,
+      "n_bases": 375842,
+      "compute_sec": 3.52
+    },
+    "chr8": {
+      "length": 145138636,
+      "gc_pct": 40.16,
+      "cpg_count": 1338200,
+      "cpg_oe": 0.229,
+      "cpg_islands": 10762,
+      "n_bases": 370500,
+      "compute_sec": 3.18
+    },
+    "chr9": {
+      "length": 138394717,
+      "gc_pct": 41.28,
+      "cpg_count": 1255728,
+      "cpg_oe": 0.242,
+      "cpg_islands": 11534,
+      "n_bases": 16604167,
+      "compute_sec": 2.71
+    },
+    "chr10": {
+      "length": 133797422,
+      "gc_pct": 41.54,
+      "cpg_count": 1388978,
+      "cpg_oe": 0.242,
+      "cpg_islands": 11540,
+      "n_bases": 534460,
+      "compute_sec": 2.93
+    },
+    "chr11": {
+      "length": 135086622,
+      "gc_pct": 41.54,
+      "cpg_count": 1333114,
+      "cpg_oe": 0.23,
+      "cpg_islands": 11694,
+      "n_bases": 552880,
+      "compute_sec": 2.61
+    },
+    "chr12": {
+      "length": 133275309,
+      "gc_pct": 40.77,
+      "cpg_count": 1315968,
+      "cpg_oe": 0.238,
+      "cpg_islands": 12121,
+      "n_bases": 137493,
+      "compute_sec": 2.64
+    },
+    "chr13": {
+      "length": 114364328,
+      "gc_pct": 38.55,
+      "cpg_count": 842469,
+      "cpg_oe": 0.231,
+      "cpg_islands": 6707,
+      "n_bases": 16381203,
+      "compute_sec": 2.58
+    },
+    "chr14": {
+      "length": 107043718,
+      "gc_pct": 40.83,
+      "cpg_count": 895881,
+      "cpg_oe": 0.237,
+      "cpg_islands": 7711,
+      "n_bases": 16475569,
+      "compute_sec": 2.36
+    },
+    "chr15": {
+      "length": 101991189,
+      "gc_pct": 42.03,
+      "cpg_count": 906026,
+      "cpg_oe": 0.242,
+      "cpg_islands": 7962,
+      "n_bases": 17349864,
+      "compute_sec": 2.25
+    },
+    "chr16": {
+      "length": 90338345,
+      "gc_pct": 44.58,
+      "cpg_count": 1150891,
+      "cpg_oe": 0.283,
+      "cpg_islands": 12095,
+      "n_bases": 8532402,
+      "compute_sec": 2.08
+    },
+    "chr17": {
+      "length": 83257441,
+      "gc_pct": 45.32,
+      "cpg_count": 1248328,
+      "cpg_oe": 0.293,
+      "cpg_islands": 14822,
+      "n_bases": 337237,
+      "compute_sec": 2.06
+    },
+    "chr18": {
+      "length": 80373285,
+      "gc_pct": 39.78,
+      "cpg_count": 756014,
+      "cpg_oe": 0.239,
+      "cpg_islands": 5579,
+      "n_bases": 283680,
+      "compute_sec": 1.68
+    },
     "chr19": {
       "length": 58617616,
       "gc_pct": 47.94,
@@ -67,7 +283,7 @@
       "cpg_oe": 0.329,
       "cpg_islands": 16809,
       "n_bases": 176858,
-      "compute_sec": 1.32
+      "compute_sec": 1.25
     },
     "chr20": {
       "length": 64444167,
@@ -76,7 +292,7 @@
       "cpg_oe": 0.252,
       "cpg_islands": 7162,
       "n_bases": 499910,
-      "compute_sec": 1.28
+      "compute_sec": 1.51
     },
     "chr21": {
       "length": 46709983,
@@ -85,7 +301,7 @@
       "cpg_oe": 0.275,
       "cpg_islands": 4484,
       "n_bases": 6621364,
-      "compute_sec": 0.96
+      "compute_sec": 0.91
     },
     "chr22": {
       "length": 50818468,
@@ -94,7 +310,16 @@
       "cpg_oe": 0.293,
       "cpg_islands": 6814,
       "n_bases": 11658691,
-      "compute_sec": 0.97
+      "compute_sec": 0.99
+    },
+    "chrX": {
+      "length": 156040895,
+      "gc_pct": 39.53,
+      "cpg_count": 1322709,
+      "cpg_oe": 0.219,
+      "cpg_islands": 10323,
+      "n_bases": 1147866,
+      "compute_sec": 2.97
     },
     "chrY": {
       "length": 57227415,

@@ -1,0 +1,123 @@
+[15:02:11] === genome-wide reference-broadcast fan-out · 24 chromosomes · harness=Claude Code ===
+[15:02:11] crabbox present; coordinator: whoami requires a configured coordinator
+[15:02:11] === 1/5 warm base: toolchain + 24 GRCh38 chromosomes + index ===
+[15:03:42] warm base built in 88.55s
+[15:03:42] === 2/5 snapshot warm base -> genomics-wg-1781449331 ===
+[15:03:55] snapshot saved in 10.27s (size ready 962.5)
+[15:03:55] === 3/5 cold baseline: chr1 from scratch ===
+[15:04:26]   [cold] chr1 28.68s (try 1)
+[15:04:28] cold baseline (chr1) 32.55s
+[15:04:28] === 4/5 warm fan-out: fork 24 shards from snapshot (MAXP=8) ===
+[15:04:40]   [warm] chr4 try 1: no JSON, retry
+[15:04:43]   [warm] chr6 11.1s (try 1)
+[15:04:43]   [warm] chr1 11.67s (try 1)
+[15:04:44]   [warm] chr5 9.69s (try 1)
+[15:04:44]   [warm] chr3 10.1s (try 1)
+[15:04:44]   [warm] chr8 12.14s (try 1)
+[15:04:44]   [warm] chr7 10.4s (try 1)
+[15:04:45]   [warm] chr2 11.19s (try 1)
+[15:04:46]   [warm] chr4 try 2: no JSON, retry
+[15:04:46]   [warm] chr4 FAILED
+[15:04:59]   [warm] chr14 try 1: no JSON, retry
+[15:05:02]   [warm] chr15 8.36s (try 1)
+[15:05:02]   [warm] chr16 8.52s (try 1)
+[15:05:02]   [warm] chr11 8.75s (try 1)
+[15:05:03]   [warm] chr12 8.99s (try 1)
+[15:05:03]   [warm] chr13 7.69s (try 1)
+[15:05:03]   [warm] chr9 9.3s (try 1)
+[15:05:03]   [warm] chr10 7.99s (try 1)
+[15:05:10]   [warm] chr14 8.32s (try 2)
+[15:05:22]   [warm] chr22 6.86s (try 1)
+[15:05:23]   [warm] chrY 7.22s (try 1)
+[15:05:23]   [warm] chr21 7.42s (try 1)
+[15:05:23]   [warm] chr18 7.65s (try 1)
+[15:05:23]   [warm] chr19 7.52s (try 1)
+[15:05:23]   [warm] chr17 7.69s (try 1)
+[15:05:23]   [warm] chr20 7.86s (try 1)
+[15:05:25]   [warm] chrX 9.5s (try 1)
+[15:05:28] warm fan-out wall-clock 59.78s
+[15:05:28] === 5/5 reduce -> data/receipts.json (genome-wide) ===
+{
+  "shards": 23,
+  "genome": {
+    "total_bp": 2898055277,
+    "n_bases": 150168831,
+    "gc_pct": 41.05,
+    "cpg_sites": 27897931,
+    "cpg_islands": 252978,
+    "ref": "GRCh38",
+    "chroms": [
+      "chr1",
+      "chr2",
+      "chr3",
+      "chr5",
+      "chr6",
+      "chr7",
+      "chr8",
+      "chr9",
+      "chr10",
+      "chr11",
+      "chr12",
+      "chr13",
+      "chr14",
+      "chr15",
+      "chr16",
+      "chr17",
+      "chr18",
+      "chr19",
+      "chr20",
+      "chr21",
+      "chr22",
+      "chrX",
+      "chrY"
+    ]
+  },
+  "biology": {
+    "island_density_per_mb": {
+      "chr1": 97.6,
+      "chr2": 72.8,
+      "chr3": 63.2,
+      "chr5": 69.3,
+      "chr6": 76.3,
+      "chr7": 92.3,
+      "chr8": 74.3,
+      "chr9": 94.7,
+      "chr10": 86.6,
+      "chr11": 86.9,
+      "chr12": 91.0,
+      "chr13": 68.5,
+      "chr14": 85.1,
+      "chr15": 94.1,
+      "chr16": 147.8,
+      "chr17": 178.8,
+      "chr18": 69.7,
+      "chr19": 287.6,
+      "chr20": 112.0,
+      "chr21": 111.9,
+      "chr22": 174.0,
+      "chrX": 66.6,
+      "chrY": 79.7
+    },
+    "most_island_rich": "chr19",
+    "most_island_poor": "chr3",
+    "signal": "chr19 densest, chr3 sparsest \u2014 the gene-density gradient across all 23 chromosomes."
+  },
+  "warmup_sec": 88.55,
+  "snapshot": {
+    "name": "genomics-wg-1781449331",
+    "size": "962.5",
+    "save_sec": 10.27
+  },
+  "map_wallclock_sec": 59.78,
+  "economics": {
+    "cold_serial_sec": 748.6,
+    "cold_fanout_sec": 32.55,
+    "warm_first_run_sec": 158.6,
+    "warm_rerun_sec": 59.8,
+    "speedup_fanout": 3.6,
+    "speedup_rerun": 12.5,
+    "redundant_downloads_avoided_mb": 860.2,
+    "redundant_warmups_avoided": 22
+  }
+}
+[15:05:28] === DONE (snapshot genomics-wg-1781449331 retained) ===

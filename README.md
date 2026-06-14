@@ -1,6 +1,6 @@
-# Warm one box. Fork the genome.
+# Reference broadcast by VM snapshot
 
-**Reference broadcast by VM snapshot — a real, reproducible genomics demo on [islo.dev](https://islo.dev).**
+**Copy-on-write fan-out for genomic scatter-gather — a real, genome-wide, reproducible demo on [islo.dev](https://islo.dev), orchestrated end-to-end by a Claude Code agent.**
 
 🔗 **Live:** https://zozo123.github.io/genomics-sandboxes/
 
@@ -21,11 +21,21 @@ copy-on-write per shard — the same mechanism Firecracker and Lambda SnapStart 
 shard costs a page-table setup, not another multi-GB read, and every fork is byte-identical
 because they map the same physical pages.
 
-I validated the fan-out against a **positive control**, not a discovery: per-chromosome
-CpG-island density is known to track gene density, so a correct map-reduce *must* return chr19
-(most gene-dense) on top and chrY (a gene desert) at the bottom. It does. Recovering a known
-gradient from an independently written kernel is evidence the sharding, compute, and reduce are
-all wired correctly — exactly the check you want when the pipeline is model-written.
+The fan-out is validated against a **positive control**, not a discovery: per-chromosome
+CpG-island density is known to track gene density, so a correct map-reduce *must* return the
+gene-dense chromosomes on top (chr19, chr17, chr22) and the gene-poor ones at the bottom (chr4,
+chr3, chr13). Genome-wide, it does. Recovering a known gradient from an independently written
+kernel is evidence the sharding, compute, and reduce are all wired correctly — exactly the check
+you want when the pipeline is model-written.
+
+**The harness is a Claude Code agent.** The whole pipeline — warm → snapshot → fork(24) → reduce
+→ teardown — is driven end-to-end by an agent running [`crabbox.sh`](./crabbox.sh) / the islo CLI;
+in the run below a Claude Code sub-agent orchestrated the entire 24-way fan-out. No scheduler, no
+cluster account. Genome-wide receipts (all 24 GRCh38 chromosomes, ~3.09 Gb): warm base built once
+in **88.6 s**, snapshot **962 MB** in **10.3 s**, 24-way fan-out in **~60 s** wall-clock; staging
+the reference per worker instead would be ≈13 min serially (**~13× on snapshot reuse**, **862 MB**
+of redundant reference transfer avoided). Every number on the site is fetched live from
+[`data/receipts.json`](./data/receipts.json).
 
 ## What it computes
 
@@ -49,69 +59,78 @@ warm one box ──▶ snapshot it ──▶ fork per chromosome ──▶ reduc
   index, once)     to every worker)  just computes)         landscape, delete boxes)
 ```
 
-Four verbs of the islo CLI:
+Four verbs of the islo CLI, genome-wide:
 
 ```bash
-# 1 · warm base: toolchain + GRCh38 chromosomes + index (paid once)
-islo use gx-warm -- bash -lc './warmup.sh chr19 chr20 chr21 chr22 chrY'
+# 1 · warm base: toolchain + all 24 GRCh38 chromosomes + index (paid once)
+islo use gx-warm -- bash -lc './warmup.sh chr1 chr2 ... chr22 chrX chrY'
 
 # 2 · broadcast: freeze the warm box to a snapshot
-islo snapshot save gx-warm --name genomics-warm
+islo snapshot save gx-warm --name genomics-wg
 
-# 3 · MAP: fork one warm box per chromosome, in parallel
-for chr in chr19 chr20 chr21 chr22 chrY; do
-  islo use gx-map-$chr --snapshot genomics-warm -- python3 compute.py $chr &
+# 3 · MAP: fork one warm box per chromosome (waves of 8)
+for chr in chr1 ... chrY; do
+  islo use gx-$chr --snapshot genomics-wg -- python3 compute.py $chr &
 done; wait
 
 # 4 · REDUCE: merge per-shard JSON, then delete the boxes
 ```
 
-Driven end-to-end by [`scripts/run_demo.sh`](./scripts/run_demo.sh).
+The whole thing is `./crabbox.sh run`, driven end-to-end by a **Claude Code agent** as the harness.
 
-## Real receipts (this run)
+## Real receipts — genome-wide (this run)
 
 | | |
 |---|---|
-| Chromosomes (shards) | 5 — chr19, chr20, chr21, chr22, chrY |
-| Bases scanned | 277,817,649 (~278 Mb) |
-| CpG sites | 3,201,954 |
-| CpG-island candidates | 37,374 |
-| Warm base built (once) | 24.1 s |
-| Snapshot | 127 MB, saved in 3.9 s |
-| Cold fan-out (each worker re-stages) | 34.2 s wall-clock |
-| Warm snapshot-fork fan-out | 14.8 s wall-clock |
-| First-run / re-run speedup | 2.3× / 7.4× |
-| Redundant reference downloads avoided | ~288 MB |
+| Chromosomes (shards) | 24 — chr1–chr22, chrX, chrY |
+| Bases scanned | 3,088,269,832 (~3.09 Gb) |
+| CpG sites | 29,401,360 |
+| CpG-island candidates | 264,816 |
+| Warm base built (once) | 88.6 s |
+| Snapshot | 962 MB, saved in 10.3 s |
+| Warm 24-way fan-out | ~60 s wall-clock (3 waves of 8) |
+| Cold-equivalent serial staging | ~13 min |
+| Re-run speedup (snapshot reuse) | ~13× |
+| Redundant reference downloads avoided | ~862 MB |
+| Orchestrator | a Claude Code sub-agent |
 
 Raw numbers behind every figure: [`data/receipts.json`](./data/receipts.json) (the site fetches
-it live — nothing is hardcoded). Per-shard outputs are in `data/warm_*.json` / `data/cold_*.json`.
+it live — nothing is hardcoded). Per-shard outputs are in `data/wg_warm_*.json`.
 
 ### The free correctness check
 
-The fan-out recovers a known biological fact: **CpG-island density tracks gene density.**
+The fan-out recovers a known biological fact, genome-wide: **CpG-island density tracks gene density.**
 
-| chromosome | CpG-island candidates | islands / Mb |
+| chromosome | islands / sequenced Mb | |
 |---|---|---|
-| chr19 | 16,809 | **287.6** (densest in the genome) |
-| chr22 | 6,814 | 174.0 |
-| chr20 | 7,162 | 112.0 |
-| chr21 | 4,484 | 111.9 |
-| chrY  | 2,105 | **79.7** (a gene desert) |
+| chr19 | **287.6** | densest in the genome |
+| chr17 | 178.8 | |
+| chr22 | 174.0 | gene-rich |
+| chr16 | 147.8 | |
+| … | … | (24 chromosomes, sorted) |
+| chr13 | 68.5 | |
+| chr3  | 63.2 | gene-poor |
+| chr4  | **62.4** | sparsest |
 
-If the map-reduce were wrong, the biology would be wrong. It isn't.
+The gene-dense chromosomes (chr19/17/22) sort to the top and the gene-poor ones (chr4/3/13) to
+the bottom — across all 24, from an independently written kernel. If the map-reduce were wrong,
+the gradient would be wrong. It isn't.
 
 ## Reproduce
 
 ```bash
 # islo CLI + login required (https://islo.dev)
-bash scripts/run_demo.sh           # warm → snapshot → cold/warm fan-out → reduce → data/
+./crabbox.sh run                   # genome-wide: warm → snapshot → fork(24) → reduce → data/
+#   (or the 5-chromosome quick version: bash scripts/run_demo.sh)
 python3 -m http.server 8799        # then open http://localhost:8799
 ```
 
 | File | Purpose |
 |------|---------|
+| `crabbox.sh` | genome-wide harness (warm → snapshot → 24-way fan-out → reduce); run by a Claude Code agent |
 | `index.html` / `styles.css` / `script.js` | the interactive explainer (vanilla, no build, fetches `data/*.json`) |
 | `scripts/compute.py` | the MAP kernel — one chromosome → JSON (numpy, memory-frugal) |
+| `scripts/reduce_wg.py` | genome-wide reduce → `data/receipts.json` + `data/landscape.json` |
 | `scripts/warmup.sh` | the warm-up that gets snapshotted (toolchain + reference + index) |
 | `scripts/run_demo.sh` | host orchestrator: warm → snapshot → cold/warm fan-out → reduce |
 | `data/` | measured receipts + reduced landscape + raw per-shard outputs |

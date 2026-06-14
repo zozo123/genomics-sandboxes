@@ -17,7 +17,9 @@
   /* ---------- helpers ---------- */
   function commas(n) { return Math.round(n).toLocaleString("en-US"); }
   function get(obj, path) { return path.split(".").reduce(function (o, k) { return (o == null ? o : o[k]); }, obj); }
-  var CHR_ORDER = ["chr19", "chr20", "chr21", "chr22", "chrY"];
+  var CHR_ORDER = ["chr1","chr2","chr3","chr4","chr5","chr6","chr7","chr8","chr9","chr10",
+    "chr11","chr12","chr13","chr14","chr15","chr16","chr17","chr18","chr19","chr20",
+    "chr21","chr22","chrX","chrY"];
 
   function bindLive(r) {
     // computed aliases used by data-bind
@@ -25,20 +27,29 @@
     var warmVals = Object.keys(warm).map(function (k) { return warm[k]; });
     var warmAvg = warmVals.length ? warmVals.reduce(function (a, b) { return a + b; }, 0) / warmVals.length : 0;
     var dens = (r.biology && r.biology.island_density_per_mb) || {};
+    var bio = r.biology || {};
+    var rich = bio.most_island_rich, poor = bio.most_island_poor;
     var aliases = {
       "map_wallclock_sec_round": "~" + Math.round(r.map_wallclock_sec),
       "snapshot.size": (r.snapshot && r.snapshot.size) || "127 MB",
       "snapshot.save_sec": (r.snapshot ? r.snapshot.save_sec : 3.9),
+      "warmup_sec": r.warmup_sec,
       "genome.cpg_sites": commas(r.genome.cpg_sites),
       "genome.cpg_islands": commas(r.genome.cpg_islands),
       "genome.total_bp_mb": Math.round(r.genome.total_bp / 1e6),
+      "genome.total_bp_gb": (r.genome.total_bp / 1e9).toFixed(2),
       "genome.total_bp_commas": commas(r.genome.total_bp),
       "shards": String(r.shards),
       "cold_shard_avg_sec": r.cold_shard_avg_sec,
       "map_per_shard": "~" + warmAvg.toFixed(1),
+      "biology.rich_chrom": rich || "chr19",
+      "biology.rich_density": rich && dens[rich] != null ? dens[rich] : "287.6",
+      "biology.poor_chrom": poor || "chr4",
+      "biology.poor_density": poor && dens[poor] != null ? dens[poor] : "62.4",
       "biology.chr19_density": dens.chr19 != null ? dens.chr19 : "287.6",
-      "biology.chrY_density": dens.chrY != null ? dens.chrY : "79.7",
-      "economics.speedup_fanout": (r.economics ? r.economics.speedup_fanout : 2.3) + "×"
+      "economics.speedup_fanout": (r.economics ? r.economics.speedup_fanout : 2.3) + "×",
+      "economics.speedup_rerun": (r.economics ? r.economics.speedup_rerun : 13) + "×",
+      "economics.redundant_mb": r.economics ? commas(r.economics.redundant_downloads_avoided_mb) : "862"
     };
     document.querySelectorAll("[data-bind]").forEach(function (el) {
       var key = el.getAttribute("data-bind");
@@ -53,7 +64,9 @@
     var host = document.getElementById("fork-shards");
     var btn = document.getElementById("fork-run");
     if (!stage || !host) return;
-    var chroms = (r && r.genome && r.genome.chroms) || CHR_ORDER;
+    var allChroms = (r && r.genome && r.genome.chroms) || CHR_ORDER;
+    var CAP = 7;
+    var chroms = allChroms.slice(0, CAP);
     host.innerHTML = "";
     var shards = chroms.map(function (c) {
       var d = document.createElement("div");
@@ -62,6 +75,13 @@
       host.appendChild(d);
       return d;
     });
+    if (allChroms.length > CAP) {
+      var more = document.createElement("div");
+      more.className = "shard shard-more";
+      more.innerHTML = '<span class="box-tag">+' + (allChroms.length - CAP) + '</span><span class="box-sub">more</span>';
+      host.appendChild(more);
+      shards.push(more);
+    }
     var timers = [];
     function clear() { timers.forEach(clearTimeout); timers = []; }
     function play() {
@@ -156,7 +176,11 @@
     var warmPer = warmVals.length ? warmVals.reduce(function (a, b) { return a + b; }, 0) / warmVals.length : 7.6;
     var coldPer = r.cold_shard_avg_sec || 21.9;
     var warmup = r.warmup_sec || 24, snap = (r.snapshot && r.snapshot.save_sec) || 3.9;
-    var refPerShard = 72 / (r.shards || 5); // MB of reference per shard (approx)
+    // MB of reference staged per shard — derive from the measured run when available
+    var econ = r.economics || {};
+    var refPerShard = (econ.redundant_downloads_avoided_mb && r.shards > 1)
+      ? econ.redundant_downloads_avoided_mb / (r.shards - 1)
+      : 900 / (r.shards || 24);
 
     function fmt(s) { return s >= 90 ? (s / 60).toFixed(1) + " min" : Math.round(s) + " s"; }
     function recompute() {
@@ -216,12 +240,12 @@
       .sort(function (a, b) { return b.v - a.v; });
     var max = rows[0].v || 1;
     host.innerHTML = "";
-    rows.forEach(function (row) {
+    rows.forEach(function (row, i) {
       var el = document.createElement("div");
       el.className = "tworead-row";
       var w = (100 * row.v / max).toFixed(1) + "%";
       el.innerHTML = '<span class="tworead-name">' + row.chr + '</span>' +
-        '<span class="tworead-bar' + (row.chr === "chr19" ? " hot" : "") + '" style="--w:' + w + '"></span>' +
+        '<span class="tworead-bar' + (i === 0 ? " hot" : "") + '" style="--w:' + w + '"></span>' +
         '<span class="tworead-val">' + row.v.toFixed(1) + '</span>';
       host.appendChild(el);
     });
