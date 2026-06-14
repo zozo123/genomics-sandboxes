@@ -196,9 +196,21 @@
   <p class="kicker reveal"><span class="mk">the honest version</span>First run: a modest <strong data-bind="economics.speedup_fanout">2.3×</strong>, and I'll say so. The real win is the <em>second</em> question you ask — 7.4× on rerun, because the broadcast is already frozen. Swap the 72&nbsp;MB of test chromosomes for a real 3&nbsp;GB reference plus BWA indices, fan out across a whole cohort, and the snapshot stops being an optimization and becomes the only sane way to do it. <strong>Every fork also starts byte-identical</strong> — which is reproducibility, the thing genomics actually grades you on.</p>
 </section>
 
+<!-- ============ 05 WHY AN AGENT WANTS THIS ============ -->
+<section id="value" class="sec">
+  <header class="sec-h reveal"><span class="idx">05</span><h2>Why an agent wants this</h2><span class="sec-line"></span></header>
+  <p class="lead reveal">The reason to run genomics this way isn't the speedup. It's that the analysis above was written and executed by software, not a person — and that only works if the computer is disposable.</p>
+  <ol class="why">
+    <li class="reveal"><b>Model-written code is untrusted.</b> When an agent writes the bioinformatics, no one reads every line before it runs. A sandbox bounds the blast radius — it touches its one shard and nothing else, then it's destroyed. That's the precondition for letting a model loose on real data.</li>
+    <li class="reveal"><b>Genomics is the right shape for it.</b> The work is naturally per-sample, per-chromosome, per-hypothesis: thousands of small, independent runs. The snapshot makes the shared reference cheap to broadcast, disposability keeps each run safe, and byte-identical forks make results reproducible — the part science actually grades.</li>
+    <li class="reveal"><b>This run proves the loop.</b> No human ran it. An agent called four islo verbs — warm, snapshot, fork, reduce — read the per-shard JSON back, and tore the boxes down afterward. The lab is ephemeral, and there can be a thousand of them at once.</li>
+  </ol>
+  <p class="bear reveal"><span class="mk">the point</span>An agent's lab shouldn't be a server it has to keep clean. It should be a computer it can throw away.</p>
+</section>
+
 <!-- ============ REPRODUCE ============ -->
-<section id="repro" class="sec">
-  <header class="sec-h reveal"><span class="idx">05</span><h2>Reproduce it</h2><span class="sec-line"></span></header>
+<section id="repro" class="sec alt">
+  <header class="sec-h reveal"><span class="idx">06</span><h2>Reproduce it</h2><span class="sec-line"></span></header>
   <p class="lead reveal">The whole demo is four verbs of the <a href="https://islo.dev">islo</a> CLI. No Kubernetes, no Nextflow, no cluster account.</p>
   <pre class="code-block reveal"><code><span class="c"># 1 · warm base: toolchain + GRCh38 chromosomes + index (paid once)</span>
 islo use gx-warm -- bash -lc './warmup.sh chr19 chr20 chr21 chr22 chrY'
@@ -219,7 +231,7 @@ python3 reduce.py *.json &gt; landscape.json</code></pre>
 </section>
 
 <!-- ============ OBJECTIONS ============ -->
-<section class="sec alt">
+<section class="sec">
   <header class="sec-h reveal"><span class="idx">⌗</span><h2>Objections</h2><span class="sec-line"></span></header>
   <div class="obs reveal">
     <p><b>"This is GC content, not medicine."</b> Correct — and on purpose. It's a transparent, verifiable proxy that exercises the exact pattern real pipelines use (scatter by interval, gather results). Swap the kernel for DeepVariant or a methylation caller; the map-reduce-on-snapshots shape doesn't change.</p>
