@@ -1,3 +1,5 @@
 data/*.out* ignored
 data/_*.out
 data/_*.out.err
+scripts/*.log
+scripts/*.out
