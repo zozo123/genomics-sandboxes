@@ -69,8 +69,8 @@ em { font-style: italic; } strong, b { font-weight: 600; }
   color:var(--ink-2); border-bottom:1px solid var(--rule-2); padding-bottom:.7rem;
   margin-bottom:clamp(2rem,6vw,4rem); }
 .rule-top span:first-child { color: var(--hot); }
-h1 { font-family:var(--display); font-weight:800; font-size:clamp(2.6rem, 11vw, 8.5rem);
-  line-height:.9; letter-spacing:-.035em; margin:0 0 1.4rem; }
+h1 { font-family:var(--display); font-weight:800; font-size:clamp(2.4rem, 9vw, 7rem);
+  line-height:.9; letter-spacing:-.035em; margin:0 0 1.4rem; overflow-wrap:anywhere; }
 h1 .dot { color: var(--hot); }
 .thesis { font-size:clamp(1.25rem,3vw,1.9rem); line-height:1.32; max-width:24ch; margin:0 0 1.2rem; font-weight:400; }
 @media (min-width: 700px){ .thesis { max-width: 42ch; } }
@@ -197,11 +197,13 @@ h1 .dot { color: var(--hot); }
 .seg button:hover:not([aria-selected="true"]) { background:rgba(27,24,19,.06); color:var(--ink); }
 
 .kary { display:grid; gap:.5rem; }
-.kary-row { display:grid; grid-template-columns:3.4rem 1fr auto; align-items:center; gap:.7rem; }
+.kary-row { display:grid; grid-template-columns:3.4rem minmax(0,1fr) auto; align-items:center; gap:.7rem; }
 .kary-name { font-family:var(--mono); font-weight:600; font-size:.8rem; color:var(--ink); }
-.kary-track { display:flex; gap:1px; height:1.5rem; border-radius:2px; overflow:hidden;
+.kary-track { display:flex; gap:1px; min-width:0; height:1.5rem; border-radius:2px; overflow:hidden;
   background:var(--gap); border:1px solid var(--rule); }
-.kary-cell { flex:1 1 0; min-width:1px; }
+.kary-cell { flex:1 1 0; min-width:0; }
+/* narrow screens: ~250 one-px gaps would be wider than the track, so drop them */
+@media (max-width:760px){ .kary-track { gap:0; } }
 .kary-isl { font-family:var(--mono); font-size:.68rem; color:var(--ink-2); white-space:nowrap; }
 .kary-isl b { color:var(--hot-2); }
 .kary-legend { display:flex; align-items:center; gap:.55rem; margin-top:.9rem;

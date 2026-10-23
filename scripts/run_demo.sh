@@ -5,7 +5,7 @@
 set -uo pipefail
 export PATH="$HOME/.local/bin:$PATH"
 export ISLO_OUTPUT_FORMAT=plain
-ROOT="/Users/yossi.eliaz/genomics-sandboxes"; cd "$ROOT"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"; cd "$ROOT"
 DATA="$ROOT/data"; mkdir -p "$DATA"; rm -f "$DATA"/_*.out "$DATA"/*.json "$DATA"/*.time 2>/dev/null
 LOG="$ROOT/scripts/run.log"; : > "$LOG"
 

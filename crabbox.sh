@@ -29,7 +29,7 @@
 set -uo pipefail
 export PATH="$HOME/.local/bin:$PATH"
 export ISLO_OUTPUT_FORMAT=plain
-ROOT="/Users/yossi.eliaz/genomics-sandboxes"; cd "$ROOT"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; cd "$ROOT"
 DATA="$ROOT/data"; mkdir -p "$DATA"
 LOG="$ROOT/scripts/wg.log"; : > "$LOG"
 

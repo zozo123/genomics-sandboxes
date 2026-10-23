@@ -2,13 +2,13 @@
 
 **Copy-on-write fan-out for genomic scatter-gather — a real, genome-wide, reproducible demo on [islo.dev](https://islo.dev), orchestrated end-to-end by a Claude Code agent.**
 
-🔗 **Live:** https://zozo123.github.io/genomics-sandboxes/
+**Live page:** https://zozo123.github.io/genomics-sandboxes/
 
-![Warm one box. Fork the genome.](./og.png)
+![Reference broadcast by VM snapshot: 24 chromosomes, 3.09 Gb, 962 MB snapshot](./og.png)
 
 ---
 
-Sequencing collapsed to ~$100 a genome ([Ultima UG 100](https://www.statnews.com/2024/01/30/ultima-genomics-dna-sequencing-100-dollars/), 2024; ~$80 in 2025).
+Sequencing collapsed to ~$100 a genome ([Ultima UG 100](https://www.statnews.com/2024/01/30/ultima-genomics-dna-sequencing-100-dollars/), 2024).
 Reading DNA isn't the cost anymore — computing on it is, and the expensive part is the
 *read-only* state every pipeline shares: the reference FASTA (~3 GB) and its indices (BWA ~5 GB,
 STAR 27–30 GB, plus GATK bundles) — 8–40 GB of immutable bytes. Best-practice scatter-gather
@@ -31,10 +31,15 @@ you want when the pipeline is model-written.
 **The harness is a Claude Code agent.** The whole pipeline — warm → snapshot → fork(24) → reduce
 → teardown — is driven end-to-end by an agent running [`crabbox.sh`](./crabbox.sh) / the islo CLI;
 in the run below a Claude Code sub-agent orchestrated the entire 24-way fan-out. No scheduler, no
-cluster account. Genome-wide receipts (all 24 GRCh38 chromosomes, ~3.09 Gb): warm base built once
-in **88.6 s**, snapshot **962 MB** in **10.3 s**, 24-way fan-out in **~60 s** wall-clock; staging
-the reference per worker instead would be ≈13 min serially (**~13× on snapshot reuse**, **862 MB**
-of redundant reference transfer avoided). Every number on the site is fetched live from
+cluster account. `crabbox.sh` is a local script; it uses [crabbox](https://github.com/openclaw/crabbox)
+(openclaw) when a coordinator is configured, otherwise the islo CLI directly.
+
+Genome-wide receipts (all 24 GRCh38 chromosomes, ~3.09 Gb): warm base built once in **88.6 s**,
+snapshot **962 MB** in **10.3 s**, 24-way fan-out in **~60 s** wall-clock (**862 MB** of redundant
+reference transfer avoided). Staging the reference per worker was estimated at ≈13 min serially
+(one measured cold chr1 shard, 32.6 s, × 24); the warm re-run took ~60 s at 8-way concurrency, so
+the **~13×** combines snapshot reuse with parallelism. Per shard, cold chr1 (32.6 s) vs warm chr1
+(15.0 s) is about 2.2×. Every number on the site is fetched live from
 [`data/receipts.json`](./data/receipts.json).
 
 ## What it computes
@@ -89,8 +94,9 @@ The whole thing is `./crabbox.sh run`, driven end-to-end by a **Claude Code agen
 | Warm base built (once) | 88.6 s |
 | Snapshot | 962 MB, saved in 10.3 s |
 | Warm 24-way fan-out | ~60 s wall-clock (3 waves of 8) |
-| Cold-equivalent serial staging | ~13 min |
-| Re-run speedup (snapshot reuse) | ~13× |
+| Cold serial estimate (one cold chr1 shard × 24) | ~13 min |
+| Serial cold estimate vs. 8-way warm re-run | ~13× |
+| Per shard: cold chr1 vs. warm chr1 | 32.6 s vs. 15.0 s (~2.2×) |
 | Redundant reference downloads avoided | ~862 MB |
 | Orchestrator | a Claude Code sub-agent |
 
@@ -148,7 +154,7 @@ COW restore, AWS Lambda SnapStart) — pointed here at a heavy, read-only genomi
 fan-out. Nothing about the mechanism is claimed as new. At this toy scale the first-run speedup
 is modest; the real payoff is **amortization** (re-runs pay only the map wall-clock) and
 **byte-identical reproducibility** across shards. Scale to a 3 GB reference + BWA indices across a
-cohort and the snapshot becomes the only sane way to do it.
+cohort and the snapshot becomes the natural fit.
 
 ## Related
 
@@ -157,4 +163,4 @@ cohort and the snapshot becomes the only sane way to do it.
 - [Databases in the AI Era](https://zozo123.github.io/databases-in-the-ai-era/)
 
 Ideas owed to Dean & Ghemawat (MapReduce, 2004) and the ENCODE Consortium. Reference: GRCh38
-(UCSC goldenPath). By [Yossi Eliaz](https://www.linkedin.com/in/yossi-eliaz), 2026.
+(UCSC goldenPath). By [Yossi Eliaz](https://zozo123.github.io/) ([yossieliaz.netlify.app](https://yossieliaz.netlify.app/)), 2026.
