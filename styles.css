@@ -342,3 +342,6 @@ a[href^="#ref-"]:hover { color:var(--ink); }
   .tworead.revealed .tworead-bar::after { animation:none; }
   .tworead-axis .mk { transition:none; }
 }
+@media print {
+  .load,.reveal { opacity:1 !important; transform:none !important; transition:none !important; }
+}
